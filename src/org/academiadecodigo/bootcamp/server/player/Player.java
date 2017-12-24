@@ -12,6 +12,11 @@ public class Player {
     private int team;
     private List<Cards> hand;
 
+    public Player(Socket playerConnection) {
+        this.clientSocket = playerConnection;
+
+    }
+
     /**
      * Allows player to play a card
      *
