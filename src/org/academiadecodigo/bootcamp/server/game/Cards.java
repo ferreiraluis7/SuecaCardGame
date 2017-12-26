@@ -1,5 +1,8 @@
 package org.academiadecodigo.bootcamp.server.game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum Cards {
     // @formatter:off
 
@@ -60,22 +63,22 @@ public enum Cards {
     TWO_OF_SPADES     ("Two of Spades",     Rank.TWO,   Suit.SPADES,   "2\u2660",  "\uD83C\uDCA2");
     // @formatter:on
 
-    private final String name;
+    private final String completeName;
     private final Rank rank;
     private final Suit suit;
     private final String unicode;
     private final String unicode2;
 
-    private Cards(String name, Rank rank, Suit suit, String unicode, String unicode2) {
-        this.name = name;
+    private Cards(String name, Rank rank, Suit suit,  String unicode, String unicode2) {
+        this.completeName = name;
         this.rank = rank;
         this.suit = suit;
         this.unicode = unicode;
         this.unicode2 = unicode2;
     }
 
-    public String getName() {
-        return name;
+    public String getCompleteName() {
+        return completeName;
     }
 
     public Rank getRank() {
@@ -94,8 +97,74 @@ public enum Cards {
         return unicode2;
     }
 
+    public  static   String encode(List<Cards> cards){
+        String encodedCards = "";
+        for (Cards c : cards){
+            encodedCards += c.name() + "//";
+        }
+        return encodedCards;
+    }
+
+    public static List<Cards> decode(String encodedCards){
+
+        //needs to throw an exception in case we give a string that does not contain cads name
+
+        String[] cardString = encodedCards.split("//");
+
+        List<Cards> cards = new ArrayList<>();
+
+        for (int i = 0; i < cardString.length ; i++) {
+
+            for(Cards c : Cards.values()){
+
+                if (c.name().equals(cardString[i])){
+                    cards.add(c);
+                }
+            }
+        }
+        return cards;
+    }
+
     public enum Rank {
-        ACE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, KING, QUEEN, JACK;
+        TWO,
+        THREE,
+        FOUR,
+        FIVE,
+        SIX,
+        SEVEN,
+        EIGHT,
+        NINE,
+        QUEEN,
+        JACK,
+        KING,
+        TEN,
+        ACE;
+
+    }
+
+
+    public enum SuecaRankPoints {
+
+        TWO(0),
+        THREE(0),
+        FOUR(0),
+        FIVE(0),
+        SIX(0),
+        QUEEN(2),
+        JACK(3),
+        KING(4),
+        TEN(10),
+        ACE(11);
+
+        int cardPoints;
+
+        SuecaRankPoints(int cardPoints){
+            this.cardPoints = cardPoints;
+        }
+
+        public int getCardPoints() {
+            return cardPoints;
+        }
     }
 
     public enum Suit {

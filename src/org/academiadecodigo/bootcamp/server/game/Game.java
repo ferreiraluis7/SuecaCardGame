@@ -1,8 +1,17 @@
 package org.academiadecodigo.bootcamp.server.game;
 
+import org.academiadecodigo.bootcamp.server.player.Player;
+
 import java.util.List;
 
 public interface Game {
+
+
+    /**
+     * Starts and/or runs the game
+     * @param players
+     */
+    void start(List<Player> players);
 
     /**
      * Checks if the player move is legal according to game rules
@@ -23,7 +32,7 @@ public interface Game {
      *
      * @return the hand of cards
      */
-    List<Cards> drawCards();
+    List<Cards> drawCards(List<Cards> deck);
 
     /**
      * Gets the game score
@@ -31,4 +40,8 @@ public interface Game {
      * @return the game score
      */
     int getScore();
+
+    int getTotalPlayers();
 }
+
+
