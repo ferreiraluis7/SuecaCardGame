@@ -72,6 +72,7 @@ public class Sueca implements Game {
     @Override
     public List<Cards> drawCards(List<Cards> deck) {
         List<Cards> hand = deck.subList(0, CARDS_PER_PLAYER);
+        System.out.println("Server Side: hand: " + hand);
         deck.removeAll(hand);
         return hand;
     }

@@ -2,12 +2,18 @@ package org.academiadecodigo.bootcamp.server.player;
 
 import org.academiadecodigo.bootcamp.server.game.Cards;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
 
+    private PrintWriter output;
+    private BufferedReader input;
     private String name;
     private Socket clientSocket;
     private int team;
@@ -15,7 +21,12 @@ public class Player {
 
     public Player(Socket playerConnection) {
         this.clientSocket = playerConnection;
-
+        try {
+            this.output = new PrintWriter(clientSocket.getOutputStream(), true);
+            this.input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -88,8 +99,8 @@ public class Player {
     }
 
     public void send(String string) {
+        output.println(string);
 
-        
 
 
 
