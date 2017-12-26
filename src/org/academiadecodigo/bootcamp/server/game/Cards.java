@@ -2,6 +2,10 @@ package org.academiadecodigo.bootcamp.server.game;
 
 public enum Cards {
     // @formatter:off
+
+    //Back off the cards unicode: \uD83C\uDCA0
+
+
     ACE_OF_CLUBS      ("Ace of Clubs",      Rank.ACE,   Suit.CLUBS,    "A\u2663",  "\uD83C\uDCD1"),
     ACE_OF_DIAMONDS   ("Ace of Diamonds",   Rank.ACE,   Suit.DIAMONDS, "A\u2666",  "\uD83C\uDCC1"),
     ACE_OF_HEARTS     ("Ace of Hearts",     Rank.ACE,   Suit.HEARTS,   "A\u2665",  "\uD83C\uDCB1"),
