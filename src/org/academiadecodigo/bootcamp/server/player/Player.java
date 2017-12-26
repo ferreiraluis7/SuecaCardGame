@@ -3,6 +3,7 @@ package org.academiadecodigo.bootcamp.server.player;
 import org.academiadecodigo.bootcamp.server.game.Cards;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
@@ -10,7 +11,7 @@ public class Player {
     private String name;
     private Socket clientSocket;
     private int team;
-    private List<Cards> hand;
+    private List<Cards> hand = new ArrayList<>();
 
     public Player(Socket playerConnection) {
         this.clientSocket = playerConnection;
@@ -80,5 +81,18 @@ public class Player {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setHand(List<Cards> hand) {
+        this.hand = hand;
+    }
+
+    public void send(String string) {
+
+        
+
+
+
+
     }
 }

@@ -1,5 +1,7 @@
 package org.academiadecodigo.bootcamp.server;
 
+import org.academiadecodigo.bootcamp.server.game.Game;
+import org.academiadecodigo.bootcamp.server.game.Sueca;
 import org.academiadecodigo.bootcamp.server.player.Player;
 
 import java.io.IOException;
@@ -40,22 +42,27 @@ public class GameServer {
         ExecutorService lobby = Executors.newCachedThreadPool();
         int lobbyNumber = 1;
         while (true) {
-            Player[] playersForLobby = new Player[4];
+
+            //cesar : faz-me mais sentido que o array seja dimensionado conforme o valor que de uma variavel
+            // estática defenida no Game
+
+            // retiramos o array para uma lista
+
+
             int playersConnected = 0;
-            while (playersConnected < 4) {
+            while (playersConnected < Sueca.NUMBER_OF_PLAYERS) {
                 try {
                     System.out.println("Waiting...");
                     Socket playerConnection = serverSocket.accept();
                     System.out.println("Player Connected.");
-                    playersForLobby[playersConnected] = new Player(playerConnection);
-                    playerList.add(playersForLobby[playersConnected]);
+                    playerList.add(new Player(playerConnection));
                     playersConnected++;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
             System.out.println("new Lobby");
-            lobby.submit(new GameHandler(playersForLobby, this, lobbyNumber));
+            lobby.submit(new GameHandler(playerList, this, lobbyNumber));
             lobbyNumber++;
         }
 
