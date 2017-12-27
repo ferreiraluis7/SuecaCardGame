@@ -99,6 +99,7 @@ public class Player {
     }
 
     public void send(String string) {
+        System.out.println("sent : " + string + "\n");
         output.println(string);
 
 
