@@ -27,8 +27,8 @@ public class GameServer {
     }
 
     public static void main(String[] args) {
-        GameServer game = new GameServer();
-        game.start();
+        GameServer gameServer = new GameServer();
+        gameServer.start();
     }
 
 

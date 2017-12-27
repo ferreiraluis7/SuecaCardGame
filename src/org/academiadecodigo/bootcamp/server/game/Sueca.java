@@ -21,13 +21,26 @@ public class Sueca implements Game {
      * @param players the game players
      */
     public void start(List<Player> players) {
+        System.out.println("inside start game");
+
 
         if (!isGameStarted) {
             //Set card hand for each player
             List<Cards> deck = shuffleDeck();
-            for (Player p : players) {
-                p.setHand(drawCards(deck));
-                p.send(Cards.encode(deck));
+
+            System.out.println(deck.size());
+            System.out.println(players.size());
+
+                for (Player p : players){
+                    System.out.println("here");
+
+                List<Cards> hand = drawCards(deck);
+
+                    System.out.println("second");
+                p.setHand(hand);
+                    System.out.println("third");
+                p.send(Cards.encode(hand));
+            System.out.println("--------------------------" + players.size());
             }
             isGameStarted = true;
             return;
@@ -71,9 +84,20 @@ public class Sueca implements Game {
      */
     @Override
     public List<Cards> drawCards(List<Cards> deck) {
-        List<Cards> hand = deck.subList(0, CARDS_PER_PLAYER);
-        System.out.println("Server Side: hand: " + hand);
-        deck.removeAll(hand);
+
+        System.out.println("inside draw cards "  + deck.size());
+        if (deck.size()<= CARDS_PER_PLAYER){
+            return deck;
+        }
+        List<Cards> hand = new ArrayList<>();
+        for (int i = 0 ; i< CARDS_PER_PLAYER ; i++){
+            hand.add(deck.remove(i));
+        }
+        System.out.println(hand.size());
+        System.out.println("second stage in draw");
+        System.out.println( deck.removeAll(hand));
+
+
         return hand;
     }
 

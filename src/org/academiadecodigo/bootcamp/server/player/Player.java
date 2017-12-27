@@ -99,8 +99,8 @@ public class Player {
     }
 
     public void send(String string) {
-        output.println(string);
-
+        output.println("string to send: " + string);
+        output.flush();
 
 
 
