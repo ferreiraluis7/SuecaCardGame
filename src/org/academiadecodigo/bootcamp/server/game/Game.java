@@ -2,6 +2,7 @@ package org.academiadecodigo.bootcamp.server.game;
 
 import org.academiadecodigo.bootcamp.server.player.Player;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface Game {
@@ -11,7 +12,14 @@ public interface Game {
      * Starts and/or runs the game
      * @param players
      */
-    void start(List<Player> players);
+    void playGame(List<Player> players, int startingPlayer);
+
+    /**
+     * wait for a move from the specified player
+     * @param currentPlayer
+     * @return
+     */
+    Cards getMove(Player currentPlayer) throws IOException;
 
     /**
      * Checks if the player move is legal according to game rules
@@ -28,13 +36,6 @@ public interface Game {
     int checkPlay();
 
     /**
-     * Draw cards for a specific player
-     *
-     * @return the hand of cards
-     */
-    List<Cards> drawCards(List<Cards> deck);
-
-    /**
      * Gets the game score
      *
      * @return the game score
@@ -42,6 +43,8 @@ public interface Game {
     int getScore();
 
     int getTotalPlayers();
+
+    void setDealer(CardDealer dealer);
 }
 
 
