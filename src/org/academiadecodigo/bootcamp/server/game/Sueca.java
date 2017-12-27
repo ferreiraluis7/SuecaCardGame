@@ -11,10 +11,41 @@ public class Sueca implements Game {
     public static final int TOTAL_POINTS = 120;
     public static final int NUMBER_OF_PLAYERS = 4;
     public static final int CARDS_PER_PLAYER =10;
-    private int score;
+
 
     private int cardsPlayed = 0;
     private boolean isGameStarted;
+
+
+    /* public void playGame(List<Player> players){
+        private int team1Wins;
+        private int team2Wins;
+        int playingPlayer = 0;
+        int gameScore = 0;
+
+        while ()
+        init(players);
+        gameloop(players, playingPlayer );
+
+
+
+    } */
+
+    private void init(List<Player> players) {
+        if (isGameStarted){
+            return;
+        }
+
+        List<Cards> deck = shuffleDeck();
+        for (Player p : players){
+            List<Cards> hand = drawCards(deck);
+            p.setHand(hand);
+            p.send(Cards.encode(hand));
+        }
+        isGameStarted = true;
+    }
+
+
 
     /**
      * Starts the game loop
