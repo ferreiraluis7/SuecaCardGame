@@ -3,15 +3,17 @@ package org.academiadecodigo.bootcamp.server.game;
 import org.academiadecodigo.bootcamp.server.player.Player;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Sueca implements Game {
 
     public static final int TOTAL_POINTS = 120;
     public static final int NUMBER_OF_PLAYERS = 4;
-    public static final int CARDS_PER_PLAYER =10;
-    private int score;
+    public static final int CARDS_PER_PLAYER = 10;
+    public static final CardDealer.DeckType DECK_TYPE = CardDealer.DeckType.REGIONAL;
+    private int trueVictories;
+    private int falseVictories;
+    private CardDealer dealer;
 
     private int cardsPlayed = 0;
     private boolean isGameStarted;
@@ -21,28 +23,22 @@ public class Sueca implements Game {
      *
      * @param players the game players
      */
-    public void start(List<Player> players) {
+    public void start(List<Player> players, int startingPlayer) {
         //the player that starts the first game of a lobby is always the first to
-        int playingPlayer = 0;
 
         // game init
         if (!isGameStarted) {
             //Set card hand for each player
-            List<Cards> deck = shuffleDeck();
-            for (Player p : players){
-                    List<Cards> hand = drawCards(deck);
-                    p.setHand(hand);
-                    p.send(Cards.encode(hand));
-                }
+            dealer.dealCards(players,CARDS_PER_PLAYER, DECK_TYPE);
             isGameStarted = true;
         }
         //choose the trumpRank
         Cards.Rank trumpRank = Cards.values()[(int)Math.random()*Cards.values().length].getRank();
 
         try {
-            players.get(playingPlayer).send("It is your turn, choose a card to play");
+            players.get(startingPlayer).send("It is your turn, choose a card to play");
 
-            System.out.println(  players.get(playingPlayer).readFromClient());
+            System.out.println(  players.get(startingPlayer).readFromClient());
 
 
         } catch (IOException e) {
@@ -55,17 +51,7 @@ public class Sueca implements Game {
             //maybe needs a method for this?
             return;
         }
-
-
-
-
-
-
-
-
     }
-
-
 
 
     /**
@@ -86,53 +72,6 @@ public class Sueca implements Game {
 
 
     /**
-     *
-     * @param deck
-     * @return
-     */
-    @Override
-    public List<Cards> drawCards(List<Cards> deck) {
-
-        System.out.println("inside draw cards "  + deck.size());
-        if (deck.size()<= CARDS_PER_PLAYER){
-            return deck;
-        }
-        List<Cards> hand = new ArrayList<>();
-        for (int i = 0 ; i< CARDS_PER_PLAYER ; i++){
-            hand.add(deck.remove(i));
-        }
-        System.out.println(hand.size());
-        System.out.println("second stage in draw");
-        System.out.println( deck.removeAll(hand));
-
-
-        return hand;
-    }
-
-
-    private List<Cards> shuffleDeck(){
-
-        ArrayList<Cards> deck = new ArrayList<>();
-        for (Cards card : Cards.values()){
-            if (card.getRank().equals(Cards.Rank.SEVEN) ||
-                    card.getRank().equals(Cards.Rank.EIGHT) ||
-                    card.getRank().equals(Cards.Rank.NINE) ){
-
-                continue;
-            }
-            deck.add(card);
-        }
-        ArrayList<Cards> shuffledDeck = new ArrayList<>();
-       while (deck.size()> 0){
-           int  index = (int) Math.random()*deck.size();
-            shuffledDeck.add(deck.get(index));
-            deck.remove(index);
-       }
-       return shuffledDeck;
-    }
-
-
-    /**
      * @see Game#getScore()
      */
     @Override
@@ -143,6 +82,11 @@ public class Sueca implements Game {
     @Override
     public int getTotalPlayers() {
         return NUMBER_OF_PLAYERS;
+    }
+
+    @Override
+    public void setDealer(CardDealer dealer) {
+        this.dealer = dealer;
     }
 
     /**

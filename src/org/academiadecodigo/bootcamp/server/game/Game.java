@@ -11,7 +11,7 @@ public interface Game {
      * Starts and/or runs the game
      * @param players
      */
-    void start(List<Player> players);
+    void start(List<Player> players, int startingPlayer);
 
     /**
      * Checks if the player move is legal according to game rules
@@ -28,13 +28,6 @@ public interface Game {
     int checkPlay();
 
     /**
-     * Draw cards for a specific player
-     *
-     * @return the hand of cards
-     */
-    List<Cards> drawCards(List<Cards> deck);
-
-    /**
      * Gets the game score
      *
      * @return the game score
@@ -42,6 +35,8 @@ public interface Game {
     int getScore();
 
     int getTotalPlayers();
+
+    void setDealer(CardDealer dealer);
 }
 
 

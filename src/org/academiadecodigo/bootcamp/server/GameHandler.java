@@ -1,5 +1,6 @@
 package org.academiadecodigo.bootcamp.server;
 
+import org.academiadecodigo.bootcamp.server.game.CardDealer;
 import org.academiadecodigo.bootcamp.server.game.Game;
 import org.academiadecodigo.bootcamp.server.game.Sueca;
 import org.academiadecodigo.bootcamp.server.player.Player;
@@ -30,7 +31,8 @@ public class GameHandler implements Runnable{
 
         while (true) {
             System.out.println(Thread.currentThread().getName() + " is running.");
-            game.start(playersInLobby);
+            game.setDealer(new CardDealer());
+            game.start(playersInLobby,0);
 
 
 
