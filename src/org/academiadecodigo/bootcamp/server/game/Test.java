@@ -24,8 +24,11 @@ public class Test {
 
 
 
+        System.out.println("the back of the card : \uD83C\uDCA0 \uD83C\uDCA0 " );
 
 
+
+        System.out.println("\uD83C\uDCA0");
 
 
     }

@@ -99,12 +99,16 @@ public class Player {
     }
 
     public void send(String string) {
-        System.out.println("sent : " + string + "\n");
-        output.println(string);
-
+        output.println("string to send: " + string);
+        output.flush();
 
 
 
 
     }
+
+    public String readFromClient() throws IOException {
+        return input.readLine();
+    }
+
 }

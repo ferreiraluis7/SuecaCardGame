@@ -5,6 +5,10 @@ import java.util.List;
 
 public enum Cards {
     // @formatter:off
+
+    //Back off the cards unicode: \uD83C\uDCA0
+
+
     ACE_OF_CLUBS      ("Ace of Clubs",      Rank.ACE,   Suit.CLUBS,    "A\u2663",  "\uD83C\uDCD1"),
     ACE_OF_DIAMONDS   ("Ace of Diamonds",   Rank.ACE,   Suit.DIAMONDS, "A\u2666",  "\uD83C\uDCC1"),
     ACE_OF_HEARTS     ("Ace of Hearts",     Rank.ACE,   Suit.HEARTS,   "A\u2665",  "\uD83C\uDCB1"),
@@ -94,9 +98,16 @@ public enum Cards {
     }
 
     public  static   String encode(List<Cards> cards){
+            System.out.println("inside encode");
+        System.out.println(cards.toString());
         String encodedCards = "";
-        for (Cards c : cards){
-            encodedCards += c.name() + "//";
+        for (int i = 0; i < cards.size() ; i++) {
+
+
+
+            System.out.println("inside encode for loop");
+
+            encodedCards += cards.get(i).name() + "//";
         }
         return encodedCards;
     }

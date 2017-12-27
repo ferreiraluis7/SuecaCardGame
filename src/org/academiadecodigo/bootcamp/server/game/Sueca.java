@@ -2,6 +2,7 @@ package org.academiadecodigo.bootcamp.server.game;
 
 import org.academiadecodigo.bootcamp.server.player.Player;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,17 +22,34 @@ public class Sueca implements Game {
      * @param players the game players
      */
     public void start(List<Player> players) {
+        //the player that starts the first game of a lobby is always the first to
+        int playingPlayer = 0;
 
+        // game init
         if (!isGameStarted) {
             //Set card hand for each player
             List<Cards> deck = shuffleDeck();
-            for (Player p : players) {
-                p.setHand(drawCards(deck));
-                p.send(Cards.encode(deck));
-            }
+            for (Player p : players){
+                    List<Cards> hand = drawCards(deck);
+                    p.setHand(hand);
+                    p.send(Cards.encode(hand));
+                }
             isGameStarted = true;
-            return;
         }
+        //choose the trumpRank
+        Cards.Rank trumpRank = Cards.values()[(int)Math.random()*Cards.values().length].getRank();
+
+        try {
+            players.get(playingPlayer).send("It is your turn, choose a card to play");
+
+            System.out.println(  players.get(playingPlayer).readFromClient());
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         if (cardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER){
             //the game ends
             //maybe needs a method for this?
@@ -46,6 +64,9 @@ public class Sueca implements Game {
 
 
     }
+
+
+
 
     /**
      * @see Game#checkMove(Cards)
@@ -71,9 +92,20 @@ public class Sueca implements Game {
      */
     @Override
     public List<Cards> drawCards(List<Cards> deck) {
-        List<Cards> hand = deck.subList(0, CARDS_PER_PLAYER);
-        System.out.println("Server Side: hand: " + hand);
-        deck.removeAll(hand);
+
+        System.out.println("inside draw cards "  + deck.size());
+        if (deck.size()<= CARDS_PER_PLAYER){
+            return deck;
+        }
+        List<Cards> hand = new ArrayList<>();
+        for (int i = 0 ; i< CARDS_PER_PLAYER ; i++){
+            hand.add(deck.remove(i));
+        }
+        System.out.println(hand.size());
+        System.out.println("second stage in draw");
+        System.out.println( deck.removeAll(hand));
+
+
         return hand;
     }
 
