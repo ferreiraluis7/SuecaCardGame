@@ -51,6 +51,11 @@ public class Sueca implements Game {
             while (isGameStarted) {
 
                 try {
+
+                    if(totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER){
+                        isGameStarted = false;
+                    }
+
                     if(currentPlayer >= players.size()){
                         currentPlayer = 0;
                     }
@@ -81,9 +86,7 @@ public class Sueca implements Game {
                         continue;
                     }
 
-                    if(totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER){
-                        isGameStarted = false;
-                    }
+
 
 
                 } catch (IOException e) {
