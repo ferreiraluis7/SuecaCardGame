@@ -90,6 +90,7 @@ public class Sueca implements Game {
                         totalCardsPlayed++;//need to send info to client remove card
                         currentSuit = playedCard.getSuit();
                         currentPlayer++;
+                        dealer.sendAll(players, cardsInPlay);
                         continue;
                     }
 
@@ -111,9 +112,9 @@ public class Sueca implements Game {
 
                     players.get(currentPlayer).removeCard(playedCard);
                     totalCardsPlayed++;                                 // convert to method
-                                                                        //need to send info to client remove card
+                    dealer.sendAll(players, cardsInPlay);
                     if(cardsInPlay.size() == NUMBER_OF_PLAYERS){
-                        System.out.println("PLAYER"+ winningPlayer + " WINS THIS ROUND" + "AND MAKES " + getPoints(cardsInPlay, winningPlayer, players) + " POINTS");
+                        System.out.println("PLAYER" + players.indexOf(winningPlayer) + " WINS THIS ROUND" + "AND MAKES " + getPoints(cardsInPlay, winningPlayer, players) + " POINTS");
                         score += getPoints(cardsInPlay, winningPlayer, players);
                         currentPlayer = players.indexOf(winningPlayer);
                         cardsInPlay.clear();

@@ -29,6 +29,8 @@ public class Test {
 
 
         System.out.println("\uD83C\uDCA0");
+        System.out.println(Cards.ACE_OF_DIAMONDS.getUnicode2());
+        System.out.println(Cards.ACE_OF_DIAMONDS.getUnicode());
 
 
     }
