@@ -4,6 +4,7 @@ import org.academiadecodigo.bootcamp.Randomizer;
 import org.academiadecodigo.bootcamp.server.player.Player;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Sueca implements Game {
@@ -27,6 +28,10 @@ public class Sueca implements Game {
     public void playGame(List<Player> players, int startingPlayer) {
         Cards.Rank trumpRank;
         int currentPlayer = startingPlayer;
+        List<Cards> cardsInPlay = new ArrayList<>();
+        Cards playedCard;
+        Cards.Suit currentSuit;
+        int totalCardsPlayed = 0;
         //the player that starts the first game of a lobby is always the first to
 
         // game init
@@ -43,15 +48,42 @@ public class Sueca implements Game {
 
 
         //don't forget o change the while condition
-            while (true) {
+            while (isGameStarted) {
+
                 try {
                     if(currentPlayer >= players.size()){
                         currentPlayer = 0;
                     }
-                    // don't forget to store the cards played in each hand somewhere
-                    getMove(players.get(currentPlayer));
 
+                    playedCard = getMove(players.get(currentPlayer));
 
+                    if(cardsInPlay.isEmpty()){
+                        cardsInPlay.add(playedCard);
+                        players.get(currentPlayer).removeCard(playedCard); // convert to method
+                        totalCardsPlayed++;//need to send info to client remove card
+                        currentSuit = playedCard.getSuit();
+                        currentPlayer++;
+                        continue;
+                    }
+
+                    if(!checkMove(playedCard)){
+                        //Need to send info to client so he knows is an invalid move
+                        continue;
+                    }
+
+                    cardsInPlay.add(playedCard);
+                    players.get(currentPlayer).removeCard(playedCard);
+                    totalCardsPlayed++;                                 // convert to method
+                                                                        //need to send info to client remove card
+                    if(cardsInPlay.size() == NUMBER_OF_PLAYERS){
+                        currentPlayer = checkPlay();
+                        cardsInPlay.clear();
+                        continue;
+                    }
+
+                    if(totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER){
+                        isGameStarted = false;
+                    }
 
 
                 } catch (IOException e) {
@@ -89,7 +121,7 @@ public class Sueca implements Game {
 
             }catch (NumberFormatException e){
                 currentPlayer.send("invalid choice, please select a card to play");
-                System.err.println("String cannot be converted to integer");
+
                 continue;
             }
 
