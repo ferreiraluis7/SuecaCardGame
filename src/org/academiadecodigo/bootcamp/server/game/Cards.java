@@ -98,14 +98,9 @@ public enum Cards {
     }
 
     public  static   String encode(List<Cards> cards){
-            System.out.println("inside encode");
-        System.out.println(cards.toString());
+        System.out.println("encoding card list : " + cards.toString() + "\n");
         String encodedCards = "";
         for (int i = 0; i < cards.size() ; i++) {
-
-
-
-            System.out.println("inside encode for loop");
 
             encodedCards += cards.get(i).name() + "//";
         }

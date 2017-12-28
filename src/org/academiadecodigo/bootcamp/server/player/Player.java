@@ -46,6 +46,7 @@ public class Player {
      * @return removed card
      */
     public void removeCard(Cards card){
+        System.out.println("PLAYER " + name + " REMOVED " + card.getCompleteName() + " from hand");
         hand.remove(card);
     }
 
@@ -99,6 +100,7 @@ public class Player {
     }
 
     public void send(String string) {
+        System.out.println("PLAYER SENT MESSAGE TO CLIENT: " + string + "\n");
         output.println(string);
         output.flush();
 

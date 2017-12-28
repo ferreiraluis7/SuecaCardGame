@@ -54,7 +54,7 @@ public class GameServer {
                 try {
                     System.out.println("Waiting...");
                     Socket playerConnection = serverSocket.accept();
-                    System.out.println("Player Connected.");
+                    System.out.println("Player Connected.\n");
                     playerList.add(new Player(playerConnection));
                     playersConnected++;
                 } catch (IOException e) {

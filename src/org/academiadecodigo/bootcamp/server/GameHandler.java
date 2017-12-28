@@ -30,7 +30,7 @@ public class GameHandler implements Runnable{
 
 
         while (true) {
-            System.out.println(Thread.currentThread().getName() + " is running.");
+            System.out.println(Thread.currentThread().getName() + " is running.\n");
             game.setDealer(new CardDealer());
             game.playGame(playersInLobby);
 
