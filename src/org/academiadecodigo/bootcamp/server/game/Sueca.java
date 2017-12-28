@@ -15,10 +15,9 @@ public class Sueca implements Game {
     public static final CardDealer.DeckType DECK_TYPE = CardDealer.DeckType.REGIONAL;
     private int trueVictories;
     private int falseVictories;
-    private int score;
+    private int score = 0;
     private CardDealer dealer;
 
-    private int cardsPlayed = 0;
     private boolean isGameStarted;
 
     /**
@@ -161,10 +160,10 @@ public class Sueca implements Game {
     }
 
     /**
-     * @see Game#checkPlay(List)
+     * @see Game#checkPlay(List, Cards.Suit)
      */
     @Override
-    public int checkPlay(List<Cards> cardsPlayed) {
+    public int checkPlay(List<Cards> cardsPlayed, Cards.Suit trumpSuit) {
 
 
     }
