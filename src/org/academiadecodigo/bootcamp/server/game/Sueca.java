@@ -164,7 +164,6 @@ public class Sueca implements Game {
      */
     @Override
     public int checkPlay(List<Cards> cardsPlayed, Cards.Suit trumpSuit) {
-
     }
 
 
