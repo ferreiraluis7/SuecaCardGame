@@ -45,8 +45,8 @@ public class Player {
      *
      * @return removed card
      */
-    public Cards removeCard(Cards card){
-        throw new UnsupportedOperationException();
+    public void removeCard(Cards card){
+        hand.remove(card);
     }
 
     /**
