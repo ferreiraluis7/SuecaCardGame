@@ -26,14 +26,14 @@ public interface Game {
      *
      * @param card intended to play
      */
-    boolean checkMove(Cards card);
+    boolean checkMove(Player player, Cards card, Cards.Suit currentSuit);
 
     /**
      * Checks the winning team for each play
      *
      * @return the winning team number
      */
-    int checkPlay();
+    int checkPlay(List<Cards> cardsPlayed);
 
     /**
      * Gets the game score

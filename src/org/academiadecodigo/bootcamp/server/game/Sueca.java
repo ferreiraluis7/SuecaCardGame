@@ -15,6 +15,7 @@ public class Sueca implements Game {
     public static final CardDealer.DeckType DECK_TYPE = CardDealer.DeckType.REGIONAL;
     private int trueVictories;
     private int falseVictories;
+    private int score;
     private CardDealer dealer;
 
     private int cardsPlayed = 0;
@@ -26,11 +27,11 @@ public class Sueca implements Game {
      * @param players the game players
      */
     public void playGame(List<Player> players, int startingPlayer) {
-        Cards.Rank trumpRank;
+        Cards.Suit trumpSuit;
         int currentPlayer = startingPlayer;
         List<Cards> cardsInPlay = new ArrayList<>();
         Cards playedCard;
-        Cards.Suit currentSuit;
+        Cards.Suit currentSuit = null;
         int totalCardsPlayed = 0;
         //the player that starts the first game of a lobby is always the first to
 
@@ -39,8 +40,8 @@ public class Sueca implements Game {
             //Set card hand for each player
             dealer.dealCards(players,CARDS_PER_PLAYER, DECK_TYPE);
             isGameStarted = true;
-            //choose the trumpRank
-            trumpRank = Cards.values()[Randomizer.getRandom(Cards.values().length)].getRank();
+            //choose the trumpSuit
+            trumpSuit = Cards.values()[Randomizer.getRandom(Cards.values().length)].getSuit();
 
         }
 
@@ -53,7 +54,8 @@ public class Sueca implements Game {
                 try {
 
                     if(totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER){
-                        isGameStarted = false;
+                        isGameStarted = false; //set, show and send game score ++ update team score ++ call for a new game(new method) ++ GAME SETS?? create playsets method??
+                        continue;
                     }
 
                     if(currentPlayer >= players.size()){
@@ -71,7 +73,9 @@ public class Sueca implements Game {
                         continue;
                     }
 
-                    if(!checkMove(playedCard)){
+
+                    if(!checkMove(players.get(currentPlayer), playedCard, currentSuit)){
+                        players.get(currentPlayer).send("You are not allowed to play that card, please play another");  //INNER CLASS W/ MESSAGES BUILDER METHODS
                         //Need to send info to client so he knows is an invalid move
                         continue;
                     }
@@ -81,13 +85,10 @@ public class Sueca implements Game {
                     totalCardsPlayed++;                                 // convert to method
                                                                         //need to send info to client remove card
                     if(cardsInPlay.size() == NUMBER_OF_PLAYERS){
-                        currentPlayer = checkPlay();
+                        currentPlayer = checkPlay(cardsInPlay);
                         cardsInPlay.clear();
                         continue;
                     }
-
-
-
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -137,19 +138,35 @@ public class Sueca implements Game {
 
 
     /**
-     * @see Game#checkMove(Cards)
+     * @see Game#checkMove(Player, Cards, Cards.Suit)
      */
     @Override
-    public boolean checkMove(Cards card) {
-        throw new UnsupportedOperationException();
+    public boolean checkMove(Player player, Cards card, Cards.Suit currentSuit) {
+
+        if (playerHandHasSuit(player, currentSuit) && card.getSuit() != currentSuit){  //check Renuncia
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean playerHandHasSuit(Player player, Cards.Suit currentSuit) {
+
+        for (Cards c : player.getHand()) {
+            if (c.getSuit() == currentSuit){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
-     * @see Game#checkPlay()
+     * @see Game#checkPlay(List)
      */
     @Override
-    public int checkPlay() {
-        throw new UnsupportedOperationException();
+    public int checkPlay(List<Cards> cardsPlayed) {
+
+
     }
 
 
@@ -177,6 +194,6 @@ public class Sueca implements Game {
      * @param score the score value to be changed
      */
     private void setScore(int score) {
-        throw new UnsupportedOperationException();
+        this.score += score;
     }
 }
