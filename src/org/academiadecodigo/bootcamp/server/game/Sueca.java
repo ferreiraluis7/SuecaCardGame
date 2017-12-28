@@ -89,6 +89,7 @@ public class Sueca implements Game {
 
             }catch (NumberFormatException e){
                 currentPlayer.send("invalid choice, please select a card to play");
+                System.err.println("String cannot be converted to integer");
                 continue;
             }
 
