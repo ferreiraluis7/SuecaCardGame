@@ -17,6 +17,7 @@ public class Sueca implements Game {
     private int trueVictories;
     private int falseVictories;
     private CardDealer dealer;
+    private  int startingPlayer = 0;
 
     private boolean isGameStarted;
 
@@ -25,7 +26,7 @@ public class Sueca implements Game {
      *
      * @param players the game players
      */
-    public void playGame(List<Player> players, int startingPlayer) {
+    public void playGame (List<Player> players) {
         Cards.Suit trumpSuit= null;
         int currentPlayer = startingPlayer;
         List<Cards> cardsInPlay = new ArrayList<>();
@@ -54,23 +55,30 @@ public class Sueca implements Game {
         //don't forget o change the while condition
             while (isGameStarted) {
 
+                if(currentPlayer >= players.size()){
+                    currentPlayer = 0;
+                }
                 try {
 
                     if(totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER){
+                        if (score < TOTAL_POINTS/2){
+                            falseVictories++;
+                        }else{
+                            trueVictories ++;
+                        }
+
+
+                        startingPlayer ++;
                         isGameStarted = false; //set, show and send game score ++ update team score ++ call for a new game(new method) ++ GAME SETS?? create playsets method??
-                        continue;
+                        playGame(players);
                     }
 
-                    if(currentPlayer >= players.size()){
-                        currentPlayer = 0;
-                    }
 
                     playedCard = getMove(players.get(currentPlayer));
 
                     if(cardsInPlay.isEmpty()){
                         cardsInPlay.add(playedCard);
                         higherCard = playedCard;
-                        tempCard = playedCard;
                         winningPlayer = players.get(currentPlayer);
                         players.get(currentPlayer).removeCard(playedCard); // convert to method
                         totalCardsPlayed++;//need to send info to client remove card
@@ -98,7 +106,8 @@ public class Sueca implements Game {
                     totalCardsPlayed++;                                 // convert to method
                                                                         //need to send info to client remove card
                     if(cardsInPlay.size() == NUMBER_OF_PLAYERS){
-                        currentPlayer = checkPlay (cardsInPlay, trumpSuit);
+                        score += getPoints(cardsInPlay, winningPlayer, players);
+                        currentPlayer = players.indexOf(winningPlayer);
                         cardsInPlay.clear();
                         continue;
                     }
@@ -154,7 +163,6 @@ public class Sueca implements Game {
 
             }catch (NumberFormatException e){
                 currentPlayer.send("invalid choice, please select a card to play");
-
                 continue;
             }
 
@@ -187,11 +195,18 @@ public class Sueca implements Game {
     }
 
     /**
-     * @see Game#getPoints(List, Player)
+     * @see Game#getPoints(List, Player, List)
      */
     @Override
-    public int getPoints(List<Cards> cardsPlayed, Player winningPlayer) {
-
+    public int getPoints(List<Cards> cardsPlayed, Player winningPlayer, List<Player> players) {
+        if (players.indexOf(winningPlayer) == 1 || players.indexOf(winningPlayer) == 3){
+            return 0;
+        }
+        int points = 0;
+        for (Cards c : cardsPlayed){
+            points += c.getRank().getSuecaPoints();
+        }
+        return points;
 
     }
 
