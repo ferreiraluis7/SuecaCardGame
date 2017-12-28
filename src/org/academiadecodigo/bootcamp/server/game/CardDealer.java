@@ -9,6 +9,7 @@ import java.util.List;
 public class CardDealer {
 
     public void dealCards(List<Player> players, int cardsPerPlayer, DeckType type){
+
         List<Cards> deck = getDeck(type);
         deck = shuffleDeck(deck);
         for (Player p: players) {
@@ -18,6 +19,8 @@ public class CardDealer {
         }
 
     }
+
+
 
     /**
      *
@@ -77,6 +80,13 @@ public class CardDealer {
 
         return deck;
     }
+
+    public void sendAll(List<Player> players, List<Cards> cardsInPlay) {
+        for (Player p: players) {
+            p.send(Cards.encode(p.getHand()) + "||" + Cards.encode(cardsInPlay));
+        }
+    }
+
 
     public enum DeckType {
         REGIONAL,
