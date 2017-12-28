@@ -33,7 +33,7 @@ public interface Game {
      *
      * @return the winning team number
      */
-    int checkPlay(List<Cards> cardsPlayed, Cards.Suit trumpSuit);
+    int getPoints(List<Cards> cardsPlayed, Player winningPlayer);
 
     /**
      * Gets the game score

@@ -3,6 +3,7 @@ package org.academiadecodigo.bootcamp.server.game;
 import org.academiadecodigo.bootcamp.Randomizer;
 import org.academiadecodigo.bootcamp.server.player.Player;
 
+import javax.smartcardio.Card;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,6 @@ public class Sueca implements Game {
     public static final CardDealer.DeckType DECK_TYPE = CardDealer.DeckType.REGIONAL;
     private int trueVictories;
     private int falseVictories;
-    private int score = 0;
     private CardDealer dealer;
 
     private boolean isGameStarted;
@@ -26,12 +26,16 @@ public class Sueca implements Game {
      * @param players the game players
      */
     public void playGame(List<Player> players, int startingPlayer) {
-        Cards.Suit trumpSuit;
+        Cards.Suit trumpSuit= null;
         int currentPlayer = startingPlayer;
         List<Cards> cardsInPlay = new ArrayList<>();
         Cards playedCard;
         Cards.Suit currentSuit = null;
         int totalCardsPlayed = 0;
+        Cards higherCard = null;
+        Cards tempCard = null;
+        Player winningPlayer = null;
+        int score = 0;
         //the player that starts the first game of a lobby is always the first to
 
         // game init
@@ -65,6 +69,9 @@ public class Sueca implements Game {
 
                     if(cardsInPlay.isEmpty()){
                         cardsInPlay.add(playedCard);
+                        higherCard = playedCard;
+                        tempCard = playedCard;
+                        winningPlayer = players.get(currentPlayer);
                         players.get(currentPlayer).removeCard(playedCard); // convert to method
                         totalCardsPlayed++;//need to send info to client remove card
                         currentSuit = playedCard.getSuit();
@@ -80,11 +87,18 @@ public class Sueca implements Game {
                     }
 
                     cardsInPlay.add(playedCard);
+                    tempCard = checkHigherCard(playedCard,higherCard, trumpSuit);
+
+                    if(!tempCard.equals(higherCard)){
+                        winningPlayer = players.get(currentPlayer);
+                        higherCard = tempCard;
+                    }
+
                     players.get(currentPlayer).removeCard(playedCard);
                     totalCardsPlayed++;                                 // convert to method
                                                                         //need to send info to client remove card
                     if(cardsInPlay.size() == NUMBER_OF_PLAYERS){
-                        currentPlayer = checkPlay(cardsInPlay);
+                        currentPlayer = checkPlay (cardsInPlay, trumpSuit);
                         cardsInPlay.clear();
                         continue;
                     }
@@ -95,6 +109,22 @@ public class Sueca implements Game {
                 currentPlayer++;
             }
 
+
+    }
+
+    private Cards checkHigherCard(Cards playedCard, Cards higherCard, Cards.Suit trumpSuit) {
+       if (!playedCard.getSuit().equals(higherCard.getSuit())){
+           if (!playedCard.getSuit().equals(trumpSuit)){
+               return higherCard;
+           }
+           return playedCard;
+        }
+
+        if (playedCard.getRank().getSuecaRank() > higherCard.getRank().getSuecaRank()){
+           return playedCard;
+        }
+
+        return higherCard;
 
     }
 
@@ -142,11 +172,8 @@ public class Sueca implements Game {
     @Override
     public boolean checkMove(Player player, Cards card, Cards.Suit currentSuit) {
 
-        if (playerHandHasSuit(player, currentSuit) && card.getSuit() != currentSuit){  //check Renuncia
-            return false;
-        }
+        return  (playerHandHasSuit(player, currentSuit) && !card.getSuit().equals(currentSuit));  //check Renuncia
 
-        return true;
     }
 
     private boolean playerHandHasSuit(Player player, Cards.Suit currentSuit) {
@@ -160,13 +187,15 @@ public class Sueca implements Game {
     }
 
     /**
-     * @see Game#checkPlay(List, Cards.Suit)
+     * @see Game#getPoints(List, Player)
      */
     @Override
-    public int checkPlay(List<Cards> cardsPlayed, Cards.Suit trumpSuit) {
+    public int getPoints(List<Cards> cardsPlayed, Player winningPlayer) {
 
 
     }
+
+
 
 
     /**
@@ -187,12 +216,4 @@ public class Sueca implements Game {
         this.dealer = dealer;
     }
 
-    /**
-     * Changes the game score
-     *
-     * @param score the score value to be changed
-     */
-    private void setScore(int score) {
-        this.score += score;
-    }
 }
