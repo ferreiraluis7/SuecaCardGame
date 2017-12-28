@@ -38,7 +38,7 @@ public interface Game {
     /**
      * Gets the game score
      *
-     * @return the game score
+     * @return the index of the next player to play
      */
     int getScore();
 
