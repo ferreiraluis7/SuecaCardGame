@@ -45,8 +45,8 @@ public class Player {
      *
      * @return removed card
      */
-    public Cards removeCard(Cards card){
-        throw new UnsupportedOperationException();
+    public void removeCard(Cards card){
+        hand.remove(card);
     }
 
     /**
@@ -99,7 +99,7 @@ public class Player {
     }
 
     public void send(String string) {
-        output.println("string to send: " + string);
+        output.println(string);
         output.flush();
 
 

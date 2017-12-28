@@ -12,7 +12,7 @@ public interface Game {
      * Starts and/or runs the game
      * @param players
      */
-    void playGame(List<Player> players, int startingPlayer);
+    void playGame(List<Player> players);
 
     /**
      * wait for a move from the specified player
@@ -33,7 +33,7 @@ public interface Game {
      *
      * @return the winning team number
      */
-    int checkPlay(List<Cards> cardsPlayed, Cards.Suit trumpSuit);
+    int getPoints(List<Cards> cardsPlayed, Player winningPlayer, List<Player> players);
 
     /**
      * Gets the game score
