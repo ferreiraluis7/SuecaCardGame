@@ -60,7 +60,6 @@ public class Client {
                     System.out.println(readLineSplit[1]);
                     System.out.println(input.readLine());
                     input.close();
-                    output.close();
                 } else {
                     System.out.println(readLine);
                 }
@@ -71,7 +70,7 @@ public class Client {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Client disconnected");
         }
 
     }
