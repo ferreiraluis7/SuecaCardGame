@@ -13,8 +13,8 @@ public class Sueca implements Game {
     public static final int NUMBER_OF_PLAYERS = 4;
     public static final int CARDS_PER_PLAYER = 10;
     public static final CardDealer.DeckType DECK_TYPE = CardDealer.DeckType.REGIONAL;
-    private int trueVictories;
-    private int falseVictories;
+    private int teamOneVictories;
+    private int teamTwoVictories;
     private CardDealer dealer;
     private  int startingPlayer = 0;
 
@@ -51,6 +51,11 @@ public class Sueca implements Game {
             System.out.println("TRUMP IS " + trumpSuit);
             currentGameHand = "\n\nTRUMP: " + trumpSuit + "\n\nGAME HAND:\n";
 
+            players.get(0).send("Your team mate is player 3");
+            players.get(1).send("Your team mate is player 4");
+            players.get(2).send("Your team mate is player 1");
+            players.get(3).send("Your team mate is player 2");
+
         }
 
         //game loop
@@ -64,20 +69,7 @@ public class Sueca implements Game {
                 }
                 try {
 
-                    if(totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER){
-                        System.out.println("Entered end game condition");
-
-                        if (score < TOTAL_POINTS/2){
-                            falseVictories++;
-                        }else if (score > TOTAL_POINTS/2){
-                            trueVictories ++;
-                        }
-
-
-                        startingPlayer ++;
-                        isGameStarted = false; //set, show and send game score ++ update team score ++ call for a new game(new method) ++ GAME SETS?? create playsets method??
-                        playGame(players);
-                    }
+                    isGameEnd(players, totalCardsPlayed, score);
 
 
                     playedCard = getMove(players.get(currentPlayer),players);
@@ -121,8 +113,10 @@ public class Sueca implements Game {
                     dealer.sendAll(players, currentGameHand);
                     if(cardsInPlay.size() == NUMBER_OF_PLAYERS){
                         //added Method to tell all players the winner of the round
-                        sendAllWinner(players,"PLAYER" + players.indexOf(winningPlayer) + " WINS THIS ROUND" + "AND MAKES " + getPoints(cardsInPlay, winningPlayer, players) + " POINTS");
-                        score += getPoints(cardsInPlay, winningPlayer, players);
+                        dealer.broadcastMessage(players, winningPlayer.getName() + " WINS THIS ROUND AND MAKES " + getPoints(cardsInPlay, winningPlayer, players) + " POINTS \n");
+                        if (players.indexOf(winningPlayer) == 0 || players.indexOf(winningPlayer) == 2){
+                            score += getPoints(cardsInPlay, winningPlayer, players);
+                        }
                         currentPlayer = players.indexOf(winningPlayer);
                         currentGameHand = "\n\nTRUMP: " + trumpSuit + "\n\nGAME HAND:\n"; //reset String to default
                         cardsInPlay.clear();
@@ -136,6 +130,35 @@ public class Sueca implements Game {
             }
 
 
+    }
+
+    private void isGameEnd(List<Player> players, int totalCardsPlayed, int score) {
+        if(totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER){
+            System.out.println("Entered end game condition");
+            dealer.broadcastMessage(players,"\n\n GAME HAS ENDED \n");
+            if (score < TOTAL_POINTS/2){
+                teamTwoVictories++;
+                dealer.broadcastMessage(players, "Team Two has won this game With " + (TOTAL_POINTS - score) + " points");
+                if (score < 30){
+                    teamTwoVictories ++;
+                    dealer.broadcastMessage(players, "Tem two has scored more than 90 points, double victory for team Two");
+                }
+            }else if (score > TOTAL_POINTS/2) {
+                teamOneVictories++;
+                dealer.broadcastMessage(players, "Team One has won this game With " + score + " points");
+                if (score > 90){
+                    teamTwoVictories ++;
+                    dealer.broadcastMessage(players, "Tem One has scored more than 90 points, double victory for team One");
+                }
+            }else  {
+                dealer.broadcastMessage(players, "Game tie");
+            }
+            dealer.broadcastMessage(players, "\n GLOBAL SCORE:");
+            dealer.broadcastMessage(players, "TEAM ONE: " + teamOneVictories + " TEAM TWO: " + teamTwoVictories +"\n");
+            startingPlayer ++;
+            isGameStarted = false; //set, show and send game score ++ update team score ++ call for a new game(new method) ++ GAME SETS?? create playsets method??
+            playGame(players);
+        }
     }
 
     private Cards checkHigherCard(Cards playedCard, Cards higherCard, Cards.Suit trumpSuit) {
@@ -203,12 +226,7 @@ public class Sueca implements Game {
 
     }
 
-    private void sendAllWinner(List<Player> players, String winnerMessage) {
-        for (Player p : players) {
-            p.send(winnerMessage);
-        }
 
-    }
 
     /**
      * @see Game#checkMove(Player, Cards, Cards.Suit)
@@ -236,9 +254,7 @@ public class Sueca implements Game {
      */
     @Override
     public int getPoints(List<Cards> cardsPlayed, Player winningPlayer, List<Player> players) {
-        if (players.indexOf(winningPlayer) == 1 || players.indexOf(winningPlayer) == 3){
-            return 0;
-        }
+
         int points = 0;
         for (Cards c : cardsPlayed){
             points += c.getRank().getSuecaPoints();

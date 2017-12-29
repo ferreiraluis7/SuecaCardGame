@@ -30,21 +30,35 @@ public class ClientPlays implements Runnable, Playable {
            while(true) {
 
                String message = "-1";
-               while (Integer.parseInt(message) < 0 || Integer.parseInt(message) >= CARDSINHAND - cardsPlayed) {
 
-                   message = sc.nextLine();
-                   if(!Client.playerTurn) {
-                       System.out.println("It's not your turn...");
+
+               // THE PARSEINT METHOD TROWS AN EXCEPTION IF THE STRING IS NOT A NUMBER
+               int parsedInt = 0;
+               String wronglyEnteredString  ="";
+               try {
+                  parsedInt = Integer.parseInt(message);
+                  wronglyEnteredString = "";
+               } catch (NumberFormatException e){
+
+                    wronglyEnteredString = "error";
+               }
+
+                   while (parsedInt < 0 || parsedInt >= CARDSINHAND - cardsPlayed || !wronglyEnteredString.isEmpty()) {
+
+                       message = sc.nextLine();
+                       if (!Client.playerTurn) {
+                           System.out.println("It's not your turn...");
+                           continue;
+                       }
+                       play(message);
+                   }
+                   if (!Client.playerTurn) {
                        continue;
                    }
-                   play(message);
-               }
-               if(!Client.playerTurn) {
-                   continue;
-               }
-               sc.reset();
-               cardsPlayed++;
-               Client.playerTurn = false;
+                   sc.reset();
+                   cardsPlayed++;
+                   Client.playerTurn = false;
+
            }
     }
 

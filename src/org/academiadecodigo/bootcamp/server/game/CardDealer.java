@@ -88,6 +88,13 @@ public class CardDealer {
     }
 
 
+    public void broadcastMessage(List<Player> players, String message){
+        for (Player p: players) {
+            p.send(message);
+        }
+
+    }
+
     public enum DeckType {
         REGIONAL,
         TRADITIONAL;

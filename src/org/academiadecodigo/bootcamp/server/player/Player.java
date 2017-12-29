@@ -28,7 +28,7 @@ public class Player {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.name = "Player " + GameServer.playerNumber;
+        this.name = "Player " + GameServer.playerNumber ;
 
     }
 
