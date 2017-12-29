@@ -19,7 +19,7 @@ public interface Game {
      * @param currentPlayer
      * @return
      */
-    Cards getMove(Player currentPlayer) throws IOException;
+    Cards getMove(Player currentPlayer,List<Player> players) throws IOException;
 
     /**
      * Checks if the player move is legal according to game rules

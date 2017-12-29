@@ -36,6 +36,7 @@ public class Sueca implements Game {
         Cards tempCard;
         Player winningPlayer = null;
         int score = 0;
+        String currentGameHand = "";
         //the player that starts the first game of a lobby is always the first to
 
         // game init
@@ -48,7 +49,7 @@ public class Sueca implements Game {
             //choose the trumpSuit
             trumpSuit = Cards.values()[Randomizer.getRandom(Cards.values().length)].getSuit();
             System.out.println("TRUMP IS " + trumpSuit);
-
+            currentGameHand = "\n\nTRUMP: " + trumpSuit + "\n\nGAME HAND:\n";
 
         }
 
@@ -79,18 +80,21 @@ public class Sueca implements Game {
                     }
 
 
-                    playedCard = getMove(players.get(currentPlayer));
+                    playedCard = getMove(players.get(currentPlayer),players);
 
 
                     if(cardsInPlay.isEmpty()){
                         cardsInPlay.add(playedCard);
                         higherCard = playedCard;
                         winningPlayer = players.get(currentPlayer);
+
+                        currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "\n"; //add players and card to the string
+
                         players.get(currentPlayer).removeCard(playedCard); // convert to method
                         totalCardsPlayed++;//need to send info to client remove card
                         currentSuit = playedCard.getSuit();
                         currentPlayer++;
-                        dealer.sendAll(players, cardsInPlay);
+                        dealer.sendAll(players, currentGameHand);
                         continue;
                     }
 
@@ -111,12 +115,16 @@ public class Sueca implements Game {
                     }
 
                     players.get(currentPlayer).removeCard(playedCard);
+                    currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "\n"; //add players and card to the string
                     totalCardsPlayed++;                                 // convert to method
-                    dealer.sendAll(players, cardsInPlay);
+                    //dealer.sendAll(players, cardsInPlay);
+                    dealer.sendAll(players, currentGameHand);
                     if(cardsInPlay.size() == NUMBER_OF_PLAYERS){
-                        System.out.println("PLAYER" + players.indexOf(winningPlayer) + " WINS THIS ROUND" + "AND MAKES " + getPoints(cardsInPlay, winningPlayer, players) + " POINTS");
+                        //added Method to tell all players the winner of the round
+                        sendAllWinner(players,"PLAYER" + players.indexOf(winningPlayer) + " WINS THIS ROUND" + "AND MAKES " + getPoints(cardsInPlay, winningPlayer, players) + " POINTS");
                         score += getPoints(cardsInPlay, winningPlayer, players);
                         currentPlayer = players.indexOf(winningPlayer);
+                        currentGameHand = "\n\nTRUMP: " + trumpSuit + "\n\nGAME HAND:\n"; //reset String to default
                         cardsInPlay.clear();
                         continue;
                     }
@@ -152,9 +160,15 @@ public class Sueca implements Game {
     }
 
     @Override
-    public Cards getMove(Player currentPlayer) throws IOException {
+    public Cards getMove(Player currentPlayer, List<Player> players) throws IOException {
 
-        currentPlayer.send("It is your turn, choose a card to play");
+        for (Player p : players) {
+            if (p == currentPlayer) {
+                p.send("It is your turn, choose a card to play [0 - " + (p.getHand().size() - 1) + "]");
+            } else {
+                p.send(currentPlayer.getName() + " is playing...");
+            }
+        }
 
         while (true){
             System.out.println("enterd getmove loop");
@@ -189,6 +203,12 @@ public class Sueca implements Game {
 
     }
 
+    private void sendAllWinner(List<Player> players, String winnerMessage) {
+        for (Player p : players) {
+            p.send(winnerMessage);
+        }
+
+    }
 
     /**
      * @see Game#checkMove(Player, Cards, Cards.Suit)
