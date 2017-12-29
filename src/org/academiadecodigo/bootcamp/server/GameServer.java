@@ -14,7 +14,8 @@ import java.util.concurrent.Executors;
 
 public class GameServer {
     private final int PORT = 8080;
-    ServerSocket serverSocket;
+    private ServerSocket serverSocket;
+    private List<Player> totalPlayersList;
     private List<Player> playerList;
     public static int playerNumber = 1; //PARA ATRIBUIR NOMES DINAMICAMENTE AOS PLAYERS
 
@@ -23,6 +24,7 @@ public class GameServer {
         try {
             serverSocket = new ServerSocket(PORT);
             playerList = new ArrayList<>();
+            totalPlayersList = new ArrayList<>();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,8 +58,10 @@ public class GameServer {
                 try {
                     System.out.println("Waiting...");
                     Socket playerConnection = serverSocket.accept();
-                    System.out.println("Player Connected.\n");
-                    playerList.add(new Player(playerConnection));
+                    System.out.println("Player Connected.\r\n");
+                    Player playerConnected = new Player(playerConnection);
+                    totalPlayersList.add(playerConnected);
+                    playerList.add(playerConnected);
                     playerNumber++;
                     playersConnected++;
                 } catch (IOException e) {
@@ -67,6 +71,7 @@ public class GameServer {
             System.out.println("new Lobby");
             lobby.submit(new GameHandler(playerList, this, lobbyNumber));
             lobbyNumber++;
+            playerList.clear();
         }
 
     }
@@ -78,5 +83,9 @@ public class GameServer {
      */
     public List<Player> getPlayerList() {
         return playerList;
+    }
+
+    public List<Player> getTotalPlayersList() {
+        return totalPlayersList;
     }
 }

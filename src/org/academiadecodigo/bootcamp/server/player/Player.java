@@ -116,4 +116,10 @@ public class Player {
        return input.readLine();
     }
 
+    public void setTeam(int team) {
+        this.team = team;
+    }
+
 }
+
+

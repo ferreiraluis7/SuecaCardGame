@@ -5,6 +5,7 @@ import org.academiadecodigo.bootcamp.server.game.Game;
 import org.academiadecodigo.bootcamp.server.game.Sueca;
 import org.academiadecodigo.bootcamp.server.player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameHandler implements Runnable{
@@ -14,7 +15,10 @@ public class GameHandler implements Runnable{
     private int lobbyNumber;
 
     public GameHandler(List<Player> playersForLobby, GameServer server, int lobbyNumber) {
-        playersInLobby = playersForLobby;
+        playersInLobby = new ArrayList<>();
+        for (Player p : playersForLobby) {
+            playersInLobby.add(p);
+        }
         this.game = new Sueca();
         this.server = server;
         this.lobbyNumber = lobbyNumber;
@@ -35,7 +39,7 @@ public class GameHandler implements Runnable{
                 return;
             }
 
-            System.out.println(Thread.currentThread().getName() + " is running.\n");
+            System.out.println(Thread.currentThread().getName() + " is running.\r\n");
             game.setDealer(new CardDealer());
             game.playGame(playersInLobby);
 

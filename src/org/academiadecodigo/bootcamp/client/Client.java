@@ -14,17 +14,12 @@ public class Client {
     private final static int PORT = 8080;
     private final static String HOST = "localhost";
     public static boolean playerTurn = false;
-    private int cardsPlayed = 0;
-    private String  message;
     private Socket clientSocket = null;
-    private PrintWriter output = null;
     private BufferedReader input = null;
 
     public static void main(String[] args) {
         Client client = new Client();
         client.start();
-
-
     }
 
     /**
@@ -36,37 +31,19 @@ public class Client {
             return;
         }
 
-        ExecutorService sendThread = Executors.newSingleThreadExecutor();
-        sendThread.execute(new ClientPlays(clientSocket, this));
+        ExecutorService outThread = Executors.newSingleThreadExecutor();
+        outThread.execute(new ClientPlays(clientSocket, this));
         try {
             input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String whenToPlay = "It is your turn,";
+
             while (true) {
                 String readLine = input.readLine();
 
-
-                if (readLine.contains("//")) {
-                    String[] readLineSplit = readLine.split(",,");
-                    String[] handSplit = readLineSplit[0].split("//");
-                    for(int counter = 0; counter < handSplit.length; counter++) {
-                        String cardCode = Cards.valueOf(handSplit[counter]).getUnicode();
-                        System.out.println(counter + " - " + cardCode); //SOUT CARDS HAND
-                    }
-                    if (readLineSplit.length > 1) { //BECAUSE 1ST STRING DOESN'T HAVE ,, AND WITHOUT THIS CONDITION IT WOULD CAUSE INDEX OUT OF BOUNDS
-                        System.out.println(readLineSplit[1]); //SOUT GAME HAND
-                    }
-                }else if (readLine.contains("PLAYERQUIT")){
-                    String[] readLineSplit = readLine.split("@@");
-                    System.out.println(readLineSplit[1]);
-                    System.out.println(input.readLine());
-                    input.close();
-                } else {
-                    System.out.println(readLine);
-                }
+                decodeReceivedString(readLine);
 
                 if (readLine.contains(whenToPlay)) {
                     playerTurn = true;
-                    cardsPlayed++;
                 }
             }
         } catch (IOException e) {
@@ -78,18 +55,35 @@ public class Client {
     /**
      * Decodes incoming message from server
      *
-     * @param incoming incoming message from server
+     * @param readLine incoming message from server
      *
      * @return decoded message
      */
-    private String decodeReceivedString(String incoming) {
-        throw new UnsupportedOperationException();
+    private void decodeReceivedString(String readLine) throws IOException {
+        if (readLine.contains("//")) {
+            String[] readLineSplit = readLine.split(",,");
+            String[] handSplit = readLineSplit[0].split("//");
+            for(int counter = 0; counter < handSplit.length; counter++) {
+                String cardCode = Cards.valueOf(handSplit[counter]).getUnicode();
+                renderToScreen(counter + " - " + cardCode); //SOUT CARDS HAND
+            }
+            if (readLineSplit.length > 1) { //BECAUSE 1ST STRING DOESN'T HAVE ,, AND WITHOUT THIS CONDITION IT WOULD CAUSE INDEX OUT OF BOUNDS
+                renderToScreen(readLineSplit[1]); //SOUT GAME HAND
+            }
+        }else if (readLine.contains("PLAYERQUIT")){
+            String[] readLineSplit = readLine.split("@@");
+            renderToScreen(readLineSplit[1]);
+            renderToScreen(input.readLine());
+            input.close();
+        } else {
+            renderToScreen(readLine);
+        }
     }
 
     /**
      * Renders the decoded message to the terminal
      */
-    private void renderToScreen(String decodedMessage){
+    public void renderToScreen(String decodedMessage){
         System.out.println(decodedMessage);
     }
 
@@ -106,12 +100,12 @@ public class Client {
     private boolean connectServer() {
         boolean serverConnected = false;
         try {
-            System.out.println("Connecting to server...");
+            renderToScreen("Connecting to server...");
             clientSocket = new Socket(HOST, PORT);
-            System.out.println("Connected.");
+            renderToScreen("Connected.");
             serverConnected = true;
         } catch (IOException e) {
-            System.out.println("Couldn't connect.");
+            renderToScreen("Couldn't connect.");
             serverConnected = false;
         }
         return serverConnected;
@@ -120,5 +114,6 @@ public class Client {
     public void newGame(){
         start();
     }
+
 }
 

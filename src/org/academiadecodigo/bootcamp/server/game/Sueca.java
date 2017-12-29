@@ -50,7 +50,7 @@ public class Sueca implements Game {
             //choose the trumpSuit
             trumpSuit = randomizeTrumpSuit();
             System.out.println("TRUMP IS " + trumpSuit);
-            currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\nGAME HAND:\n";
+            currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\r\nGAME HAND:\r\n";
             informPlayerPartner(players);
             dealer.broadcastMessage(players, generateTrumpSuitMessage(trumpSuit));
             isGameStarted = true;
@@ -84,7 +84,7 @@ public class Sueca implements Game {
                         higherCard = playedCard;
                         winningPlayer = players.get(currentPlayer);
 
-                        currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard.getUnicode() + "\n"; //add players and card to the string
+                        currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard.getUnicode() + "\r\n"; //add players and card to the string
                         // convert to method
                         totalCardsPlayed++;//need to send info to client remove card
                         currentSuit = playedCard.getSuit();
@@ -108,7 +108,7 @@ public class Sueca implements Game {
                         winningPlayer = players.get(currentPlayer);
                         higherCard = tempCard;
                     }
-                    currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "\n"; //add players and card to the string
+                    currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard.getUnicode() + "\n"; //add players and card to the string
                     totalCardsPlayed++;                                 // convert to method
                     //dealer.sendAll(players, cardsInPlay);
                     dealer.sendAll(players, currentGameHand);
@@ -119,7 +119,7 @@ public class Sueca implements Game {
                             score += getPoints(cardsInPlay, winningPlayer, players);
                         }
                         currentPlayer = players.indexOf(winningPlayer);
-                        currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\nGAME HAND:\n"; //reset String to default
+                        currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\r\nGAME HAND:\r\n"; //reset String to default
                         cardsInPlay.clear();
                         continue;
                     }
@@ -134,7 +134,7 @@ public class Sueca implements Game {
     }
 
     private String generateTrumpSuitMessage(Cards.Suit trumpSuit) {
-        return "\n\nTRUMP: " + trumpSuit + "\n";
+        return "\r\nTRUMP: " + trumpSuit + "\r\n";
     }
 
     private void confirmPlay(List<Player> players, int currentPlayer, List<Cards> cardsInPlay, Cards playedCard) {
@@ -143,10 +143,14 @@ public class Sueca implements Game {
     }
 
     private void informPlayerPartner(List<Player> players) {
-        players.get(0).send("\nYour team mate is player 3");
-        players.get(1).send("\nYour team mate is player 4");
-        players.get(2).send("\nYour team mate is player 1");
-        players.get(3).send("\nYour team mate is player 2");
+        players.get(0).setTeam(1);
+        players.get(1).setTeam(2);
+        players.get(2).setTeam(1);
+        players.get(3).setTeam(2);
+        players.get(0).send("\nYou're in Team " + players.get(0).getTeam() + "your team mate is " + players.get(2).getName());
+        players.get(1).send("\nYou're in Team " + players.get(1).getTeam() + "your team mate is " + players.get(3).getName());
+        players.get(2).send("\nYou're in Team " + players.get(2).getTeam() + "your team mate is " + players.get(0).getName());
+        players.get(3).send("\nYou're in Team " + players.get(3).getTeam() + "your team mate is " + players.get(1).getName());
     }
 
     private Cards.Suit randomizeTrumpSuit() {
@@ -166,7 +170,7 @@ public class Sueca implements Game {
                 dealer.broadcastMessage(players, "Team Two has won this game With " + (TOTAL_POINTS - score) + " points");
                 if (score < 30){
                     teamTwoVictories ++;
-                    dealer.broadcastMessage(players, "Tem two has scored more than 90 points, double victory for team Two");
+                    dealer.broadcastMessage(players, "Team two has scored more than 90 points, double victory for team Two");
                 }
             }else if (score > TOTAL_POINTS/2) {
                 teamOneVictories++;

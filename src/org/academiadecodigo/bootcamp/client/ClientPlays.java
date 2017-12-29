@@ -54,7 +54,7 @@ public class ClientPlays implements Runnable, Playable {
                            client.newGame();
                        }
                        if (!Client.playerTurn) {
-                           System.out.println("It's not your turn...");
+                           client.renderToScreen("It's not your turn...");
                            continue;
                        }
                        play(message);
@@ -65,6 +65,7 @@ public class ClientPlays implements Runnable, Playable {
                    sc.reset();
                    cardsPlayed++;
                    Client.playerTurn = false;
+               clearScreen();
 
            }
     }
@@ -85,7 +86,6 @@ public class ClientPlays implements Runnable, Playable {
     }
 
     private void clearScreen(){
-        final String clearString = "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n";
-        System.out.println(clearString);
+        client.renderToScreen("\033[H\033[2J");
     }
 }
