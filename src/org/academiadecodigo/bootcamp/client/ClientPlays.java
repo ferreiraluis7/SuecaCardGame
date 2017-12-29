@@ -34,7 +34,7 @@ public class ClientPlays implements Runnable, Playable {
 
                // THE PARSEINT METHOD TROWS AN EXCEPTION IF THE STRING IS NOT A NUMBER
                int parsedInt = 0;
-               String wronglyEnteredString  ="";
+               String wronglyEnteredString;
                try {
                   parsedInt = Integer.parseInt(message);
                   wronglyEnteredString = "";

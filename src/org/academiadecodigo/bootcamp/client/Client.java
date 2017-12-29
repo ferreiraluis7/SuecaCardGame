@@ -105,5 +105,10 @@ public class Client {
         }
         return serverConnected;
     }
+
+    private void clearScreen(){
+        final String clearString = "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n";
+        System.out.println(clearString);
+    }
 }
 
