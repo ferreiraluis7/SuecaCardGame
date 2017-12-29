@@ -79,8 +79,7 @@ public class Client {
 
     }
     private void clearScreen() throws IOException {
-      //  System.out.print("\033[H\033[2J");
-        Runtime.getRuntime().exec("clear");
+        System.out.print("\033[H\033[2J");
     }
 
     /**

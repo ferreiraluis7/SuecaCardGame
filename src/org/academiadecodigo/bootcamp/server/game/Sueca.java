@@ -109,7 +109,7 @@ public class Sueca implements Game {
                         winningPlayer = players.get(currentPlayer);
                         higherCard = tempCard;
                     }
-                    currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "\n"; //add players and card to the string
+                    currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard.getUnicode() + "\n"; //add players and card to the string
                     totalCardsPlayed++;                                 // convert to method
                     //dealer.sendAll(players, cardsInPlay);
                     dealer.sendAll(players, currentGameHand);
