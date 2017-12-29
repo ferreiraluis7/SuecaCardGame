@@ -5,6 +5,8 @@ import org.academiadecodigo.bootcamp.server.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class CardDealer {
 
@@ -29,6 +31,7 @@ public class CardDealer {
      */
     public List<Cards> drawCards(List<Cards> deck, int cardsPerPlayer) {
         if (deck.size()<= cardsPerPlayer){
+            deck = sortCards(deck);
             return deck;
         }
         List<Cards> hand = new ArrayList<>();
@@ -38,6 +41,22 @@ public class CardDealer {
         hand = sortCards(hand);
 
         return hand;
+    }
+
+    private List<Cards> sortCardsByRank(List<Cards> hand){
+        Queue<Cards> q = new PriorityQueue<>();
+
+        while(!hand.isEmpty()){
+            q.offer(hand.remove(0));
+        }
+
+        while (!q.isEmpty()){
+            hand.add(q.remove());
+        }
+
+        return hand;
+
+
     }
 
     private List<Cards> sortCards(List<Cards> hand) {
@@ -67,10 +86,10 @@ public class CardDealer {
         }
 
 
-        sortedHand.addAll(clubsHand);
-        sortedHand.addAll(spadesHand);
-        sortedHand.addAll(heartsHand);
-        sortedHand.addAll(diamondsHand);
+        sortedHand.addAll(sortCardsByRank(clubsHand));
+        sortedHand.addAll(sortCardsByRank(spadesHand));
+        sortedHand.addAll(sortCardsByRank(heartsHand));
+        sortedHand.addAll(sortCardsByRank(diamondsHand));
         return sortedHand;
     }
 
