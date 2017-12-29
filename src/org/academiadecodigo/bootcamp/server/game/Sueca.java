@@ -55,6 +55,7 @@ public class Sueca implements Game {
             players.get(1).send("Your team mate is player 4");
             players.get(2).send("Your team mate is player 1");
             players.get(3).send("Your team mate is player 2");
+            dealer.broadcastMessage(players,"\nTRUMP: " + trumpSuit + "\n");
 
         }
 
