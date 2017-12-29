@@ -110,7 +110,16 @@ public class Player {
     }
 
     public String readFromClient() throws IOException {
-        return input.readLine();
+        String receivedMessage;
+        String prevMessage = "";
+
+        //need to fix the double enter before playing
+        while (!(receivedMessage = input.readLine()).equals("")){
+            prevMessage = receivedMessage;
+            System.out.println("previous message" + prevMessage);
+        }
+
+        return prevMessage;
     }
 
 }
