@@ -80,7 +80,7 @@ public class Sueca implements Game {
                         higherCard = playedCard;
                         winningPlayer = players.get(currentPlayer);
 
-                        currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "\n"; //add players and card to the string
+                        currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard.getUnicode() + "\n"; //add players and card to the string
                         // convert to method
                         totalCardsPlayed++;//need to send info to client remove card
                         currentSuit = playedCard.getSuit();
