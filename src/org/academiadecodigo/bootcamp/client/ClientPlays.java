@@ -58,6 +58,7 @@ public class ClientPlays implements Runnable, Playable {
                            continue;
                        }
                        play(message);
+                       Client.playerTurn = false;
                    }
                    if (!Client.playerTurn) {
                        continue;
@@ -66,6 +67,7 @@ public class ClientPlays implements Runnable, Playable {
                    cardsPlayed++;
                    Client.playerTurn = false;
                clearScreen();
+
 
            }
     }
@@ -88,4 +90,5 @@ public class ClientPlays implements Runnable, Playable {
     private void clearScreen(){
         client.renderToScreen("\033[H\033[2J");
     }
+
 }

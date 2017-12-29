@@ -33,9 +33,10 @@ public class GameHandler implements Runnable{
 
 
 
-        while (true) {
+        while (true) { // delete if game doesn't ends after a number of wins
 
             if (game.isPlayerLeft()){
+                System.out.println("######RUN ");
                 return;
             }
 

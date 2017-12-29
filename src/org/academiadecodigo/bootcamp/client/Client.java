@@ -25,9 +25,9 @@ public class Client {
     /**
      * Starts the client
      */
-    private void start(){
+    private void start() {
         //If can't connect to server, leave.
-        if(!connectServer()) {
+        if (!connectServer()) {
             return;
         }
 
@@ -38,28 +38,38 @@ public class Client {
             String whenToPlay = "It is your turn,";
 
             while (true) {
+
                 String readLine = input.readLine();
-
                 decodeReceivedString(readLine);
-
                 if (readLine.contains(whenToPlay)) {
                     playerTurn = true;
                 }
             }
         } catch (IOException e) {
-            System.err.println("Client disconnected");
+            System.err.println("Someone has left the game");
         }
 
+    }
+    private void clearScreen() throws IOException {
+        System.out.print("\033[H\033[2J");
     }
 
     /**
      * Decodes incoming message from server
      *
+<<<<<<< HEAD
      * @param readLine incoming message from server
      *
+=======
+     * @param readLine incoming message from server
+>>>>>>> luis
      * @return decoded message
      */
     private void decodeReceivedString(String readLine) throws IOException {
+        if (readLine == null) {
+            System.exit(1);
+        }
+
         if (readLine.contains("//")) {
             String[] readLineSplit = readLine.split(",,");
             String[] handSplit = readLineSplit[0].split("//");
@@ -93,7 +103,6 @@ public class Client {
 
     /**
      * @see Playable#checkKeyboardInput(String)
-     *
      **/
 
 
@@ -111,7 +120,7 @@ public class Client {
         return serverConnected;
     }
 
-    public void newGame(){
+    public void newGame() {
         start();
     }
 
