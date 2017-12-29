@@ -58,13 +58,14 @@ public class ClientPlays implements Runnable, Playable {
                            continue;
                        }
                        play(message);
+                       Client.playerTurn = false;
                    }
                    if (!Client.playerTurn) {
                        continue;
                    }
                    sc.reset();
                    cardsPlayed++;
-                   Client.playerTurn = false;
+
 
            }
     }
