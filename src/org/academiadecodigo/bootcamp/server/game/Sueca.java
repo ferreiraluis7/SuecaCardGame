@@ -74,6 +74,9 @@ public class Sueca implements Game {
 
                     playedCard = getMove(players.get(currentPlayer),players);
 
+                    if (playedCard == null){
+                        return;
+                    }
 
                     if(cardsInPlay.isEmpty()){
                         cardsInPlay.add(playedCard);
@@ -197,6 +200,21 @@ public class Sueca implements Game {
             System.out.println("enterd getmove loop");
 
             String moveString = currentPlayer.readFromClient();
+
+            System.out.println("moveString = " + moveString);
+            System.out.println("before null condition");
+
+            if (moveString ==null){
+                System.out.println("inside null condition");
+                players.remove(currentPlayer);
+
+                for (Player p :players) {
+                    System.out.println("player " +currentPlayer + " has left");
+                    p.send("PLAYERQUIT@@" + "Player: " + currentPlayer.getName() + " has left the game");//"PLAYERQUIT" is a reference so client can read and print
+                    p.send("To play again, type </newGame>");
+                }
+              return null;
+            }
             System.out.println("player said " + moveString);
             try {
                 int cardIndex = Integer.parseInt(moveString);

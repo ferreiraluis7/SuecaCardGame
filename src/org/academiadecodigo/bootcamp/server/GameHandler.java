@@ -32,6 +32,9 @@ public class GameHandler implements Runnable{
         while (true) {
             System.out.println(Thread.currentThread().getName() + " is running.");
             game.setDealer(new CardDealer());
+            if (playersInLobby.size() < Sueca.NUMBER_OF_PLAYERS){
+                return;
+            }
             game.playGame(playersInLobby);
 
 

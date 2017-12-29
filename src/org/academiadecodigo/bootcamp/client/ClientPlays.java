@@ -10,8 +10,10 @@ public class ClientPlays implements Runnable, Playable {
     private Socket socket;
     private PrintWriter output;
     private int cardsPlayed = 0;
+    private Client client;
 
-    public ClientPlays(Socket socket) {
+    public ClientPlays(Socket socket, Client client) {
+        this.client = client;
         this.socket = socket;
         try {
             output = new PrintWriter(socket.getOutputStream(), true);
@@ -26,6 +28,8 @@ public class ClientPlays implements Runnable, Playable {
     public void run() {
 
             Scanner sc = new Scanner(System.in);
+
+
             //change while later
            while(true) {
 
@@ -46,6 +50,9 @@ public class ClientPlays implements Runnable, Playable {
                    while (parsedInt < 0 || parsedInt >= CARDSINHAND - cardsPlayed || !wronglyEnteredString.isEmpty()) {
 
                        message = sc.nextLine();
+                       if (message.toUpperCase().equals("/NEWGAME")){
+                           client.newGame();
+                       }
                        if (!Client.playerTurn) {
                            System.out.println("It's not your turn...");
                            continue;

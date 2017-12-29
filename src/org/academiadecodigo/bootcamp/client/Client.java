@@ -35,12 +35,14 @@ public class Client {
         }
 
         ExecutorService sendThread = Executors.newSingleThreadExecutor();
-        sendThread.execute(new ClientPlays(clientSocket));
+        sendThread.execute(new ClientPlays(clientSocket, this));
         try {
             input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String whenToPlay = "It is your turn,";
             while (true) {
                 String readLine = input.readLine();
+
+
                 if (readLine.contains("//")) {
                     String[] readLineSplit = readLine.split(",,");
                     String[] handSplit = readLineSplit[0].split("//");
@@ -50,9 +52,14 @@ public class Client {
                     if (readLineSplit.length > 1) { //BECAUSE 1ST STRING DOESN'T HAVE ,, AND WITHOUT THIS CONDITION IT WOULD CAUSE INDEX OUT OF BOUNDS
                         System.out.println(readLineSplit[1]); //SOUT GAME HAND
                     }
+                }else if (readLine.contains("PLAYERQUIT")){
+                    String[] readLineSplit = readLine.split("@@");
+                    System.out.println(readLineSplit[1]);
+                    System.out.println(input.readLine());
                 } else {
                     System.out.println(readLine);
                 }
+
                 if (readLine.contains(whenToPlay)) {
                     playerTurn = true;
                     cardsPlayed++;
@@ -104,6 +111,10 @@ public class Client {
             serverConnected = false;
         }
         return serverConnected;
+    }
+
+    public void newGame(){
+        start();
     }
 }
 
