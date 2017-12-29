@@ -50,6 +50,7 @@ public class Client {
                 }
 
                 if (readLine.contains("//")) {
+                    clearScreen();
                     String[] readLineSplit = readLine.split(",,");
                     String[] handSplit = readLineSplit[0].split("//");
                     for (int counter = 0; counter < handSplit.length; counter++) {
@@ -76,6 +77,10 @@ public class Client {
             System.err.println("Someone has left the game");
         }
 
+    }
+    private void clearScreen() throws IOException {
+      //  System.out.print("\033[H\033[2J");
+        Runtime.getRuntime().exec("clear");
     }
 
     /**
