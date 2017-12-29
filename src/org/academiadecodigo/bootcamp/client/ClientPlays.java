@@ -84,8 +84,5 @@ public class ClientPlays implements Runnable, Playable {
         }
     }
 
-    private void clearScreen(){
-        final String clearString = "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n";
-        System.out.println(clearString);
-    }
+
 }
