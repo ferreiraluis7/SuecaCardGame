@@ -44,17 +44,12 @@ public class Sueca implements Game {
 
         if (!isGameStarted) {
             //Set card hand for each player
-            dealer.dealCards(players,CARDS_PER_PLAYER, DECK_TYPE);
-            isGameStarted = true;
+            prepareGame(players);
             //choose the trumpSuit
-            trumpSuit = Cards.values()[Randomizer.getRandom(Cards.values().length)].getSuit();
+            trumpSuit = randomizeTrumpSuit();
             System.out.println("TRUMP IS " + trumpSuit);
             currentGameHand = "\n\nTRUMP: " + trumpSuit + "\n\nGAME HAND:\n";
-
-            players.get(0).send("Your team mate is player 3");
-            players.get(1).send("Your team mate is player 4");
-            players.get(2).send("Your team mate is player 1");
-            players.get(3).send("Your team mate is player 2");
+            informPlayerPartner(players);
             dealer.broadcastMessage(players,"\nTRUMP: " + trumpSuit + "\n");
 
         }
@@ -131,6 +126,22 @@ public class Sueca implements Game {
             }
 
 
+    }
+
+    private void informPlayerPartner(List<Player> players) {
+        players.get(0).send("Your team mate is player 3");
+        players.get(1).send("Your team mate is player 4");
+        players.get(2).send("Your team mate is player 1");
+        players.get(3).send("Your team mate is player 2");
+    }
+
+    private Cards.Suit randomizeTrumpSuit() {
+        return Cards.values()[Randomizer.getRandom(Cards.values().length)].getSuit();
+    }
+
+    private void prepareGame(List<Player> players) {
+        dealer.dealCards(players,CARDS_PER_PLAYER, DECK_TYPE);
+        isGameStarted = true;
     }
 
     private void isGameEnd(List<Player> players, int totalCardsPlayed, int score) {
