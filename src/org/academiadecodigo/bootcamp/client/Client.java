@@ -15,7 +15,7 @@ public class Client {
     private final static String HOST = "localhost";
     public static boolean playerTurn = false;
     private int cardsPlayed = 0;
-    private String  message;
+    private String message;
     private Socket clientSocket = null;
     private PrintWriter output = null;
     private BufferedReader input = null;
@@ -30,9 +30,9 @@ public class Client {
     /**
      * Starts the client
      */
-    private void start(){
+    private void start() {
         //If can't connect to server, leave.
-        if(!connectServer()) {
+        if (!connectServer()) {
             return;
         }
 
@@ -43,26 +43,23 @@ public class Client {
             String whenToPlay = "It is your turn,";
             while (true) {
 
-                String readLine = "";
 
-
-
-                    readLine = input.readLine();
-                    if (readLine == null){
-                        System.exit(1);
-                    }
+                String readLine = input.readLine();
+                if (readLine == null) {
+                    System.exit(1);
+                }
 
                 if (readLine.contains("//")) {
                     String[] readLineSplit = readLine.split(",,");
                     String[] handSplit = readLineSplit[0].split("//");
-                    for(int counter = 0; counter < handSplit.length; counter++) {
+                    for (int counter = 0; counter < handSplit.length; counter++) {
                         String cardCode = Cards.valueOf(handSplit[counter]).getUnicode();
                         System.out.println(counter + " - " + cardCode); //SOUT CARDS HAND
                     }
                     if (readLineSplit.length > 1) { //BECAUSE 1ST STRING DOESN'T HAVE ,, AND WITHOUT THIS CONDITION IT WOULD CAUSE INDEX OUT OF BOUNDS
                         System.out.println(readLineSplit[1]); //SOUT GAME HAND
                     }
-                }else if (readLine.contains("PLAYERQUIT")){
+                } else if (readLine.contains("PLAYERQUIT")) {
                     String[] readLineSplit = readLine.split("@@");
                     System.out.println(readLineSplit[1]);
                     System.out.println(input.readLine());
@@ -85,7 +82,6 @@ public class Client {
      * Decodes incoming message from server
      *
      * @param incoming incoming message from server
-     *
      * @return decoded message
      */
     private String decodeReceivedString(String incoming) {
@@ -95,7 +91,7 @@ public class Client {
     /**
      * Renders the decoded message to the terminal
      */
-    private void renderToScreen(String decodedMessage){
+    private void renderToScreen(String decodedMessage) {
         System.out.println(decodedMessage);
     }
 
@@ -105,7 +101,6 @@ public class Client {
 
     /**
      * @see Playable#checkKeyboardInput(String)
-     *
      **/
 
 
@@ -123,7 +118,7 @@ public class Client {
         return serverConnected;
     }
 
-    public void newGame(){
+    public void newGame() {
         start();
     }
 }
