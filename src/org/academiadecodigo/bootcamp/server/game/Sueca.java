@@ -17,6 +17,7 @@ public class Sueca implements Game {
     private int teamTwoVictories;
     private CardDealer dealer;
     private  int startingPlayer = 0;
+    private boolean playerLeft;
 
     private boolean isGameStarted;
 
@@ -210,8 +211,9 @@ public class Sueca implements Game {
 
                 for (Player p :players) {
                     System.out.println("player " +currentPlayer + " has left");
-                    p.send("PLAYERQUIT@@" + "Player: " + currentPlayer.getName() + " has left the game");//"PLAYERQUIT" is a reference so client can read and print
+                    p.send("PLAYERQUIT@@" + currentPlayer.getName() + " has left the game");//"PLAYERQUIT" is a reference so client can read and print
                     p.send("To play again, type </newGame>");
+                    playerLeft = true;
                 }
               return null;
             }
@@ -267,6 +269,7 @@ public class Sueca implements Game {
         return false;
     }
 
+
     /**
      * @see Game#getPoints(List, Player, List)
      */
@@ -301,5 +304,11 @@ public class Sueca implements Game {
     public void setDealer(CardDealer dealer) {
         this.dealer = dealer;
     }
+
+    @Override
+    public boolean isPlayerLeft() {
+        return playerLeft;
+    }
+
 
 }

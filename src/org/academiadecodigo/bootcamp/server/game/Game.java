@@ -45,6 +45,8 @@ public interface Game {
     int getTotalPlayers();
 
     void setDealer(CardDealer dealer);
+
+    boolean isPlayerLeft();
 }
 
 
