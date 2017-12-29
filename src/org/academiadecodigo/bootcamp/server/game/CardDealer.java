@@ -5,6 +5,8 @@ import org.academiadecodigo.bootcamp.server.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class CardDealer {
 
@@ -29,13 +31,66 @@ public class CardDealer {
      */
     public List<Cards> drawCards(List<Cards> deck, int cardsPerPlayer) {
         if (deck.size()<= cardsPerPlayer){
+            deck = sortCards(deck);
             return deck;
         }
         List<Cards> hand = new ArrayList<>();
         for (int i = 0 ; i< cardsPerPlayer ; i++){
             hand.add(deck.remove(i));
         }
+        hand = sortCards(hand);
+
         return hand;
+    }
+
+    private List<Cards> sortCardsByRank(List<Cards> hand){
+        Queue<Cards> q = new PriorityQueue<>();
+
+        while(!hand.isEmpty()){
+            q.offer(hand.remove(0));
+        }
+
+        while (!q.isEmpty()){
+            hand.add(q.remove());
+        }
+
+        return hand;
+
+
+    }
+
+    private List<Cards> sortCards(List<Cards> hand) {
+        List<Cards> sortedHand = new ArrayList<>();
+        List<Cards> clubsHand = new ArrayList<>();
+        List<Cards> spadesHand = new ArrayList<>();
+        List<Cards> heartsHand = new ArrayList<>();
+        List<Cards> diamondsHand = new ArrayList<>();
+
+
+        while (hand.size() > 0){
+            if(hand.get(0).getSuit().equals(Cards.Suit.CLUBS)){
+                clubsHand.add(hand.remove(0));
+                continue;
+            }
+            if(hand.get(0).getSuit().equals(Cards.Suit.HEARTS)){
+                heartsHand.add(hand.remove(0));
+                continue;
+            }
+            if(hand.get(0).getSuit().equals(Cards.Suit.SPADES)){
+                spadesHand.add(hand.remove(0));
+                continue;
+            }
+            if(hand.get(0).getSuit().equals(Cards.Suit.DIAMONDS)){
+                diamondsHand.add(hand.remove(0));
+            }
+        }
+
+
+        sortedHand.addAll(sortCardsByRank(clubsHand));
+        sortedHand.addAll(sortCardsByRank(spadesHand));
+        sortedHand.addAll(sortCardsByRank(heartsHand));
+        sortedHand.addAll(sortCardsByRank(diamondsHand));
+        return sortedHand;
     }
 
 

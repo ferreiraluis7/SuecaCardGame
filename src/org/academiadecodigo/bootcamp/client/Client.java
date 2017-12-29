@@ -1,5 +1,7 @@
 package org.academiadecodigo.bootcamp.client;
 
+import org.academiadecodigo.bootcamp.server.game.Cards;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -47,7 +49,8 @@ public class Client {
                     String[] readLineSplit = readLine.split(",,");
                     String[] handSplit = readLineSplit[0].split("//");
                     for(int counter = 0; counter < handSplit.length; counter++) {
-                        System.out.println(counter + " - " + handSplit[counter]); //SOUT CARDS HAND
+                        String cardCode = Cards.valueOf(handSplit[counter]).getUnicode();
+                        System.out.println(counter + " - " + cardCode); //SOUT CARDS HAND
                     }
                     if (readLineSplit.length > 1) { //BECAUSE 1ST STRING DOESN'T HAVE ,, AND WITHOUT THIS CONDITION IT WOULD CAUSE INDEX OUT OF BOUNDS
                         System.out.println(readLineSplit[1]); //SOUT GAME HAND

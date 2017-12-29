@@ -19,7 +19,7 @@ public class Sueca implements Game {
     private  int startingPlayer = 0;
     private boolean playerLeft;
 
-    private boolean isGameStarted;
+
 
     /**
      * Starts the game loop
@@ -38,6 +38,7 @@ public class Sueca implements Game {
         Player winningPlayer = null;
         int score = 0;
         String currentGameHand = "";
+        boolean isGameStarted = false;
         //the player that starts the first game of a lobby is always the first to
 
         // game init
@@ -45,17 +46,14 @@ public class Sueca implements Game {
 
         if (!isGameStarted) {
             //Set card hand for each player
-            dealer.dealCards(players,CARDS_PER_PLAYER, DECK_TYPE);
-            isGameStarted = true;
+            prepareGame(players);
             //choose the trumpSuit
-            trumpSuit = Cards.values()[Randomizer.getRandom(Cards.values().length)].getSuit();
+            trumpSuit = randomizeTrumpSuit();
             System.out.println("TRUMP IS " + trumpSuit);
-            currentGameHand = "\n\nTRUMP: " + trumpSuit + "\n\nGAME HAND:\n";
-
-            players.get(0).send("Your team mate is player 3");
-            players.get(1).send("Your team mate is player 4");
-            players.get(2).send("Your team mate is player 1");
-            players.get(3).send("Your team mate is player 2");
+            currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\nGAME HAND:\n";
+            informPlayerPartner(players);
+            dealer.broadcastMessage(players, generateTrumpSuitMessage(trumpSuit));
+            isGameStarted = true;
 
         }
 
@@ -70,7 +68,7 @@ public class Sueca implements Game {
                 }
                 try {
 
-                    isGameEnd(players, totalCardsPlayed, score);
+                    isGameStarted = checkGameEnd(players, totalCardsPlayed, score);
 
 
                     playedCard = getMove(players.get(currentPlayer),players);
@@ -80,13 +78,14 @@ public class Sueca implements Game {
                     }
 
                     if(cardsInPlay.isEmpty()){
-                        cardsInPlay.add(playedCard);
+
+                        confirmPlay(players, currentPlayer, cardsInPlay, playedCard);
+
                         higherCard = playedCard;
                         winningPlayer = players.get(currentPlayer);
 
-                        currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "\n"; //add players and card to the string
-
-                        players.get(currentPlayer).removeCard(playedCard); // convert to method
+                        currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard.getUnicode() + "\n"; //add players and card to the string
+                        // convert to method
                         totalCardsPlayed++;//need to send info to client remove card
                         currentSuit = playedCard.getSuit();
                         currentPlayer++;
@@ -102,15 +101,13 @@ public class Sueca implements Game {
                         continue;
                     }
 
-                    cardsInPlay.add(playedCard);
+                    confirmPlay(players, currentPlayer, cardsInPlay, playedCard);
                     System.out.println("Entered the not first play segment");
                     tempCard = checkHigherCard(playedCard,higherCard, trumpSuit);
                     if(!tempCard.equals(higherCard)){
                         winningPlayer = players.get(currentPlayer);
                         higherCard = tempCard;
                     }
-
-                    players.get(currentPlayer).removeCard(playedCard);
                     currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "\n"; //add players and card to the string
                     totalCardsPlayed++;                                 // convert to method
                     //dealer.sendAll(players, cardsInPlay);
@@ -122,7 +119,7 @@ public class Sueca implements Game {
                             score += getPoints(cardsInPlay, winningPlayer, players);
                         }
                         currentPlayer = players.indexOf(winningPlayer);
-                        currentGameHand = "\n\nTRUMP: " + trumpSuit + "\n\nGAME HAND:\n"; //reset String to default
+                        currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\nGAME HAND:\n"; //reset String to default
                         cardsInPlay.clear();
                         continue;
                     }
@@ -136,7 +133,31 @@ public class Sueca implements Game {
 
     }
 
-    private void isGameEnd(List<Player> players, int totalCardsPlayed, int score) {
+    private String generateTrumpSuitMessage(Cards.Suit trumpSuit) {
+        return "\n\nTRUMP: " + trumpSuit + "\n";
+    }
+
+    private void confirmPlay(List<Player> players, int currentPlayer, List<Cards> cardsInPlay, Cards playedCard) {
+        cardsInPlay.add(playedCard);
+        players.get(currentPlayer).removeCard(playedCard);
+    }
+
+    private void informPlayerPartner(List<Player> players) {
+        players.get(0).send("\nYour team mate is player 3");
+        players.get(1).send("\nYour team mate is player 4");
+        players.get(2).send("\nYour team mate is player 1");
+        players.get(3).send("\nYour team mate is player 2");
+    }
+
+    private Cards.Suit randomizeTrumpSuit() {
+        return Cards.values()[Randomizer.getRandom(Cards.values().length)].getSuit();
+    }
+
+    private void prepareGame(List<Player> players) {
+        dealer.dealCards(players,CARDS_PER_PLAYER, DECK_TYPE);
+    }
+
+    private boolean checkGameEnd(List<Player> players, int totalCardsPlayed, int score) {
         if(totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER){
             System.out.println("Entered end game condition");
             dealer.broadcastMessage(players,"\n\n GAME HAS ENDED \n");
@@ -160,9 +181,11 @@ public class Sueca implements Game {
             dealer.broadcastMessage(players, "\n GLOBAL SCORE:");
             dealer.broadcastMessage(players, "TEAM ONE: " + teamOneVictories + " TEAM TWO: " + teamTwoVictories +"\n");
             startingPlayer ++;
-            isGameStarted = false; //set, show and send game score ++ update team score ++ call for a new game(new method) ++ GAME SETS?? create playsets method??
+             //set, show and send game score ++ update team score ++ call for a new game(new method) ++ GAME SETS?? create playsets method??
             playGame(players);
+            return false;
         }
+        return true;
     }
 
     private Cards checkHigherCard(Cards playedCard, Cards higherCard, Cards.Suit trumpSuit) {

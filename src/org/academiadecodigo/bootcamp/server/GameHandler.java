@@ -5,7 +5,6 @@ import org.academiadecodigo.bootcamp.server.game.Game;
 import org.academiadecodigo.bootcamp.server.game.Sueca;
 import org.academiadecodigo.bootcamp.server.player.Player;
 
-import java.io.IOException;
 import java.util.List;
 
 public class GameHandler implements Runnable{
@@ -36,11 +35,8 @@ public class GameHandler implements Runnable{
                 return;
             }
 
-            System.out.println(Thread.currentThread().getName() + " is running.");
+            System.out.println(Thread.currentThread().getName() + " is running.\n");
             game.setDealer(new CardDealer());
-            if (playersInLobby.size() < Sueca.NUMBER_OF_PLAYERS){
-                return;
-            }
             game.playGame(playersInLobby);
 
 
