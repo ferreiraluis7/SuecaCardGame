@@ -1,5 +1,6 @@
 package org.academiadecodigo.bootcamp.server.player;
 
+import org.academiadecodigo.bootcamp.server.GameServer;
 import org.academiadecodigo.bootcamp.server.game.Cards;
 
 import java.io.BufferedReader;
@@ -27,6 +28,8 @@ public class Player {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.name = "Player " + GameServer.playerNumber;
+
     }
 
     /**

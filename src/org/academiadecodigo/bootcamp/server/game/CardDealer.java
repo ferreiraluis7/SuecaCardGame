@@ -81,9 +81,9 @@ public class CardDealer {
         return deck;
     }
 
-    public void sendAll(List<Player> players, List<Cards> cardsInPlay) {
+    public void sendAll(List<Player> players, String cardsInPlay) {
         for (Player p: players) {
-            p.send(Cards.encode(p.getHand()) + "||" + Cards.encode(cardsInPlay));
+            p.send(Cards.encode(p.getHand()) + ",," + cardsInPlay);
         }
     }
 
