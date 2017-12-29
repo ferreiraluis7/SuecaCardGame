@@ -16,6 +16,8 @@ public class GameServer {
     private final int PORT = 8080;
     ServerSocket serverSocket;
     private List<Player> playerList;
+    public static int playerNumber = 1; //PARA ATRIBUIR NOMES DINAMICAMENTE AOS PLAYERS
+
 
     public GameServer() {
         try {
@@ -56,6 +58,7 @@ public class GameServer {
                     Socket playerConnection = serverSocket.accept();
                     System.out.println("Player Connected.");
                     playerList.add(new Player(playerConnection));
+                    playerNumber++;
                     playersConnected++;
                 } catch (IOException e) {
                     e.printStackTrace();

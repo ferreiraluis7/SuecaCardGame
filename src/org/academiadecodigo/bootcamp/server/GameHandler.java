@@ -32,7 +32,7 @@ public class GameHandler implements Runnable{
         while (true) {
             System.out.println(Thread.currentThread().getName() + " is running.");
             game.setDealer(new CardDealer());
-            game.playGame(playersInLobby,0);
+            game.playGame(playersInLobby);
 
 
 

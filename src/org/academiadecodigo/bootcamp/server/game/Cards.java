@@ -133,46 +133,39 @@ public enum Cards {
     }
 
     public enum Rank {
-        TWO,
-        THREE,
-        FOUR,
-        FIVE,
-        SIX,
-        SEVEN,
-        EIGHT,
-        NINE,
-        QUEEN,
-        JACK,
-        KING,
-        TEN,
-        ACE;
-
-    }
+        TWO(0, 0),
+        THREE(1, 0),
+        FOUR(2, 0),
+        FIVE(3, 0),
+        SIX(4, 0),
+        SEVEN(5, 0),
+        EIGHT(6, 0),
+        NINE(7, 0),
+        TEN(11, 10),
+        JACK(9, 3),
+        QUEEN(8, 2),
+        KING(10, 4),
+        ACE(12, 11);
 
 
-    public enum SuecaRankPoints {
+        private final int suecaRank;
+        private final int suecaPoints;
 
-        TWO(0),
-        THREE(0),
-        FOUR(0),
-        FIVE(0),
-        SIX(0),
-        QUEEN(2),
-        JACK(3),
-        KING(4),
-        TEN(10),
-        ACE(11);
-
-        int cardPoints;
-
-        SuecaRankPoints(int cardPoints){
-            this.cardPoints = cardPoints;
+        Rank(int suecaRank, int suecaPoints ){
+            this.suecaRank = suecaRank;
+            this.suecaPoints = suecaPoints;
         }
 
-        public int getCardPoints() {
-            return cardPoints;
+        public int getSuecaRank() {
+            return suecaRank;
+        }
+
+        public int getSuecaPoints() {
+            return suecaPoints;
         }
     }
+
+
 
     public enum Suit {
         CLUBS, DIAMONDS, HEARTS, SPADES;

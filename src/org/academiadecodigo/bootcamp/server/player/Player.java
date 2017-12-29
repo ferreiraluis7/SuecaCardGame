@@ -1,5 +1,6 @@
 package org.academiadecodigo.bootcamp.server.player;
 
+import org.academiadecodigo.bootcamp.server.GameServer;
 import org.academiadecodigo.bootcamp.server.game.Cards;
 
 import java.io.BufferedReader;
@@ -27,6 +28,8 @@ public class Player {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.name = "Player " + GameServer.playerNumber;
+
     }
 
     /**
@@ -45,8 +48,8 @@ public class Player {
      *
      * @return removed card
      */
-    public Cards removeCard(Cards card){
-        throw new UnsupportedOperationException();
+    public void removeCard(Cards card){
+        hand.remove(card);
     }
 
     /**
@@ -99,7 +102,7 @@ public class Player {
     }
 
     public void send(String string) {
-        output.println("string to send: " + string);
+        output.println(string);
         output.flush();
 
 
