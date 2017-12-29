@@ -35,7 +35,43 @@ public class CardDealer {
         for (int i = 0 ; i< cardsPerPlayer ; i++){
             hand.add(deck.remove(i));
         }
+        hand = sortCards(hand);
+
         return hand;
+    }
+
+    private List<Cards> sortCards(List<Cards> hand) {
+        List<Cards> sortedHand = new ArrayList<>();
+        List<Cards> clubsHand = new ArrayList<>();
+        List<Cards> spadesHand = new ArrayList<>();
+        List<Cards> heartsHand = new ArrayList<>();
+        List<Cards> diamondsHand = new ArrayList<>();
+
+
+        while (hand.size() > 0){
+            if(hand.get(0).getSuit().equals(Cards.Suit.CLUBS)){
+                clubsHand.add(hand.remove(0));
+                continue;
+            }
+            if(hand.get(0).getSuit().equals(Cards.Suit.HEARTS)){
+                heartsHand.add(hand.remove(0));
+                continue;
+            }
+            if(hand.get(0).getSuit().equals(Cards.Suit.SPADES)){
+                spadesHand.add(hand.remove(0));
+                continue;
+            }
+            if(hand.get(0).getSuit().equals(Cards.Suit.DIAMONDS)){
+                diamondsHand.add(hand.remove(0));
+            }
+        }
+
+
+        sortedHand.addAll(clubsHand);
+        sortedHand.addAll(spadesHand);
+        sortedHand.addAll(heartsHand);
+        sortedHand.addAll(diamondsHand);
+        return sortedHand;
     }
 
 
