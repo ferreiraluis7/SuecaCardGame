@@ -42,8 +42,15 @@ public class Client {
             input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String whenToPlay = "It is your turn,";
             while (true) {
-                String readLine = input.readLine();
 
+                String readLine = "";
+
+
+
+                    readLine = input.readLine();
+                    if (readLine == null){
+                        System.exit(1);
+                    }
 
                 if (readLine.contains("//")) {
                     String[] readLineSplit = readLine.split(",,");
@@ -59,8 +66,6 @@ public class Client {
                     String[] readLineSplit = readLine.split("@@");
                     System.out.println(readLineSplit[1]);
                     System.out.println(input.readLine());
-                    input.close();
-                    output.close();
                 } else {
                     System.out.println(readLine);
                 }
@@ -71,7 +76,7 @@ public class Client {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Someone has left the game");
         }
 
     }

@@ -4,6 +4,7 @@ import org.academiadecodigo.bootcamp.Randomizer;
 import org.academiadecodigo.bootcamp.server.player.Player;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -213,7 +214,7 @@ public class Sueca implements Game {
     public Cards getMove(Player currentPlayer, List<Player> players) throws IOException {
 
         for (Player p : players) {
-            if (p == currentPlayer) {
+            if (p.equals(currentPlayer)) {
                 p.send("It is your turn, choose a card to play [0 - " + (p.getHand().size() - 1) + "]");
             } else {
                 p.send(currentPlayer.getName() + " is playing...");
@@ -222,8 +223,13 @@ public class Sueca implements Game {
 
         while (true){
             System.out.println("enterd getmove loop");
+            String moveString  = null;
+            try {
+                moveString = currentPlayer.readFromClient();
 
-            String moveString = currentPlayer.readFromClient();
+            }catch (SocketException e){
+                System.err.println("Player has left");
+            }
 
             System.out.println("moveString = " + moveString);
             System.out.println("before null condition");
