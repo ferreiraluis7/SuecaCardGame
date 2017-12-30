@@ -97,6 +97,7 @@ public class Sueca implements Game {
                         totalCardsPlayed++;//need to send info to client remove card
                         currentSuit = playedCard.getSuit();
                         currentPlayer++;
+                        updateGameInfo(players, scoreTeamOne, scoreTeamTwo);
                         dealer.sendAll(players, currentGameHand);
                         continue;
                     }
