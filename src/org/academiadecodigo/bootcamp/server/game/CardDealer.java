@@ -120,7 +120,7 @@ public class CardDealer {
 
     private List<Cards> shuffleDeck(List<Cards> deck){
         ArrayList<Cards> tempDeck = new ArrayList<>();
-        int numberOfShuffles = Randomizer.getRandom(1,10);
+        int numberOfShuffles = Randomizer.getRandom(10,20);
 
         List<Cards> shuffledDeck = deck;
         for (int i = 0; i < numberOfShuffles; i++) {
