@@ -374,18 +374,14 @@ public class Sueca implements Game {
                     for (Player players : playersInLobby) {
                         players.send(pName + " has left.");
                     }
-                    System.out.println("END FOR");
-
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
             }
         }
-        System.out.println("IF");
         if (playersInLobby.size() < 4) {
             playerLeft = true;
         }
-        System.out.println(playerLeft);
         return playerLeft;
     }
 }
