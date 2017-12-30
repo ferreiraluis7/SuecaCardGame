@@ -249,7 +249,10 @@ public class Sueca implements Game {
             dealer.broadcastMessage(players, "\n GLOBAL SCORE:");
             dealer.broadcastMessage(players, "TEAM ONE: " + teamOneVictories + " TEAM TWO: " + teamTwoVictories +"\n");
             startingPlayer ++;
-             //set, show and send game score ++ update team score ++ call for a new game(new method) ++ GAME SETS?? create playsets method??
+            if(startingPlayer >= NUMBER_OF_PLAYERS){
+                startingPlayer = 0;
+            }
+            //set, show and send game score ++ update team score ++ call for a new game(new method) ++ GAME SETS?? create playsets method??
             playGame(players);
             return false;
         }
