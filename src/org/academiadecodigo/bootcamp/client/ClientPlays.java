@@ -53,6 +53,12 @@ public class ClientPlays implements Runnable, Playable {
                        if (message.toUpperCase().equals("/NEWGAME")){
                            client.newGame();
                        }
+                       try {
+                           parsedInt = Integer.parseInt(message);
+                       }catch (NumberFormatException e) {
+                           client.renderToScreen("No Strings allowed.");
+                           continue;
+                       }
                        if (!Client.playerTurn) {
                            client.renderToScreen("It's not your turn...");
                            continue;

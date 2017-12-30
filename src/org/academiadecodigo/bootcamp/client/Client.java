@@ -84,7 +84,7 @@ public class Client {
             String[] readLineSplit = readLine.split("@@");
             renderToScreen(readLineSplit[1]);
             renderToScreen(input.readLine());
-            input.close();
+            //input.close();
         } else {
             renderToScreen(readLine);
         }

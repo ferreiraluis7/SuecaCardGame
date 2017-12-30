@@ -15,10 +15,8 @@ public class GameHandler implements Runnable{
     private int lobbyNumber;
 
     public GameHandler(List<Player> playersForLobby, GameServer server, int lobbyNumber) {
-        playersInLobby = new ArrayList<>();
-        for (Player p : playersForLobby) {
-            playersInLobby.add(p);
-        }
+        this.playersInLobby = new ArrayList<>();
+        this.playersInLobby.addAll(playersForLobby);
         this.game = new Sueca();
         this.server = server;
         this.lobbyNumber = lobbyNumber;
@@ -35,9 +33,25 @@ public class GameHandler implements Runnable{
 
         while (true) { // delete if game doesn't ends after a number of wins
 
-            if (game.isPlayerLeft()){
+            if (game.isPlayerLeft() && server.getPlayerList().isEmpty()){ //IF NO PLAYERS WAITING STOP
                 System.out.println("######RUN ");
                 return;
+            } else if(game.isPlayerLeft() && (!server.getPlayerList().isEmpty())) { //IF THERE ARE PLAYERS WAITING
+                try {
+                    sendAll("Cheking getting a new player...");
+                    sendAll("Starting a new game with a new player.");
+                    Thread.sleep(3000); //PARA ENGANAR E FINGIR QUE ESTA A FAZER MILHOES DE PROCESSOS COMPLICADOS
+                    sendAll("\033[H\033[2J"); // CLEAR SCREEN
+                    playersInLobby.add(server.getPlayerList().get(0)); //ADD THE WAITING PLAYER TO THIS LIST
+                    server.getPlayerList().remove(server.getPlayerList().get(0)); //REMOVE FROM WAITING LIST
+                    if (playersInLobby.size() != 4) { //IF LIST IS NOT FULL YET, CONTINUE TO PICK MORE PLAYERS
+                        continue;
+                    }
+                    //NEW GAME WHEN LIST IS FULL
+                    game = new Sueca();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             System.out.println(Thread.currentThread().getName() + " is running.\r\n");
@@ -49,6 +63,12 @@ public class GameHandler implements Runnable{
 
 
 
+        }
+    }
+
+    public void sendAll(String message) {
+        for(Player p : playersInLobby) {
+            p.send(message);
         }
     }
 

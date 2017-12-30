@@ -47,7 +47,6 @@ public class GameServer {
         int lobbyNumber = 1;
         while (true) {
             playerList = new ArrayList<>();
-            playerNumber = 1;
 
             //cesar : faz-me mais sentido que o array seja dimensionado conforme o valor que de uma variavel
             // estática defenida no Game

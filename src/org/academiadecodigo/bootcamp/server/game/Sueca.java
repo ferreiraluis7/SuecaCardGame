@@ -148,10 +148,10 @@ public class Sueca implements Game {
         players.get(1).setTeam(2);
         players.get(2).setTeam(1);
         players.get(3).setTeam(2);
-        players.get(0).send("\nYou're in Team " + players.get(0).getTeam() + "your team mate is " + players.get(2).getName());
-        players.get(1).send("\nYou're in Team " + players.get(1).getTeam() + "your team mate is " + players.get(3).getName());
-        players.get(2).send("\nYou're in Team " + players.get(2).getTeam() + "your team mate is " + players.get(0).getName());
-        players.get(3).send("\nYou're in Team " + players.get(3).getTeam() + "your team mate is " + players.get(1).getName());
+        players.get(0).send("\nYou're in Team " + players.get(0).getTeam() + ". Your team mate is " + players.get(2).getName());
+        players.get(1).send("\nYou're in Team " + players.get(1).getTeam() + ". Your team mate is " + players.get(3).getName());
+        players.get(2).send("\nYou're in Team " + players.get(2).getTeam() + ". Your team mate is " + players.get(0).getName());
+        players.get(3).send("\nYou're in Team " + players.get(3).getTeam() + ". Your team mate is " + players.get(1).getName());
     }
 
     private Cards.Suit randomizeTrumpSuit() {
