@@ -47,7 +47,6 @@ public class GameHandler implements Runnable{
                     playersInLobby.add(server.getPlayerList().get(0)); //ADD THE WAITING PLAYER TO THIS LIST
                     server.getPlayerList().get(0).send("Joined " + Thread.currentThread().getName());
                     server.getPlayerList().remove(server.getPlayerList().get(0)); //REMOVE FROM WAITING LIST
-                    System.out.println("LISTA TAMANHO " + playersInLobby.size());
                     if (playersInLobby.size() != 4) { //IF LIST IS NOT FULL YET, CONTINUE TO PICK MORE PLAYERS
                         continue;
                    }

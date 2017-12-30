@@ -42,12 +42,24 @@ public interface Game {
      */
     int getScore();
 
-    void setPlayerLeft(boolean playerLeft);
-
+    /**
+     * Gets the total number of players
+     *
+     */
     int getTotalPlayers();
 
+    /**
+     * Sets the game dealer
+     *
+     * @param dealer the game dealer
+     */
     void setDealer(CardDealer dealer);
 
+    /**
+     * Checks if a player has left the game
+     *
+     * @return true or false if the player has or hasn't left the game
+     */
     boolean isPlayerLeft();
 }
 

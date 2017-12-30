@@ -12,12 +12,21 @@ import java.util.concurrent.Executors;
 
 public class Client {
     private final static int PORT = 8080;
-    private final static String HOST = "localhost";
+    private static String HOST = "localhost";
     public static boolean playerTurn = false;
     private Socket clientSocket = null;
     private BufferedReader input = null;
     private PrintWriter output = null;
+
     public static void main(String[] args) {
+        if (args.length == 1) {
+            HOST = args[0];
+        }
+        if (args.length > 1) {
+            System.out.println("Usage: java -jar SuecaCardGame.jar <server IP ADDRESS> - connects to a specific server\n" +
+                    "java -jar SuecaCardGame.jar - connects to a local host (your machine)");
+            System.exit(1);
+        }
         Client client = new Client();
         client.start();
     }
@@ -32,7 +41,7 @@ public class Client {
         }
 
         ExecutorService outThread = Executors.newSingleThreadExecutor();
-        outThread.execute(new ClientPlays(clientSocket, this));
+        outThread.execute(new ClientHelper(clientSocket, this));
         try {
             input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String whenToPlay = "It is your turn,";
@@ -69,6 +78,13 @@ public class Client {
         if (readLine == null) {
             System.exit(1);
         }
+
+        if(readLine.contains("VICTORIES")){
+            clearScreen();
+            renderToScreen(readLine);
+            return;
+        }
+
         if (readLine.equals("CHECKCONNECT")) {
             output = new PrintWriter(clientSocket.getOutputStream(), true);
             output.println("YES");

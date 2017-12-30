@@ -9,6 +9,15 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class CardDealer {
+    /**
+     * Assigns a hand of cards to each player
+     *
+     * @param players player in game
+     *
+     * @param cardsPerPlayer the number of cards each player receive
+     *
+     * @param type type of deck to play
+     */
 
     public void dealCards(List<Player> players, int cardsPerPlayer, DeckType type){
 
@@ -25,10 +34,13 @@ public class CardDealer {
 
 
     /**
+     * Draws cards from a specific deck
      *
-     * @param deck
-     * @return
+     * @param deck deck to be used
+     *
+     * @return a hand of cards
      */
+
     public List<Cards> drawCards(List<Cards> deck, int cardsPerPlayer) {
         if (deck.size()<= cardsPerPlayer){
             deck = sortCards(deck);
@@ -43,6 +55,13 @@ public class CardDealer {
         return hand;
     }
 
+    /**
+     * Sorts cards by rank
+     *
+     * @param hand cards to be sorted
+     *
+     * @return sorted cards
+     */
     private List<Cards> sortCardsByRank(List<Cards> hand){
         Queue<Cards> q = new PriorityQueue<>();
 
@@ -55,8 +74,6 @@ public class CardDealer {
         }
 
         return hand;
-
-
     }
 
     private List<Cards> sortCards(List<Cards> hand) {
@@ -93,6 +110,13 @@ public class CardDealer {
         return sortedHand;
     }
 
+    /**
+     * Shuffles the deck
+     *
+     * @param deck deck to be shuffled
+     *
+     * @return shuffled deck
+     */
 
     private List<Cards> shuffleDeck(List<Cards> deck){
         ArrayList<Cards> tempDeck = new ArrayList<>();
@@ -110,6 +134,14 @@ public class CardDealer {
         }
         return shuffledDeck;
     }
+
+    /**
+     * Gets a deck to play
+     *
+     * @param type type of deck do play
+     *
+     * @return choosen deck
+     */
 
     private ArrayList<Cards> getDeck(DeckType type) {
         ArrayList<Cards> deck = new ArrayList<>();
@@ -136,12 +168,27 @@ public class CardDealer {
         return deck;
     }
 
+    /**
+     * Sends to all player the information of current hand and cards in table
+     *
+     * @param players player in game
+     *
+     * @param cardsInPlay cards in table
+     */
+
     public void sendAll(List<Player> players, String cardsInPlay) {
         for (Player p: players) {
             p.send(Cards.encode(p.getHand()) + ",," + cardsInPlay);
         }
     }
 
+    /**
+     * Broadcasts a message to all players
+     *
+     * @param players players to broadcast message
+     *
+     * @param message message to be broadcast
+     */
 
     public void broadcastMessage(List<Player> players, String message){
         for (Player p: players) {

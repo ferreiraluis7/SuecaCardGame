@@ -5,14 +5,14 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class ClientPlays implements Runnable, Playable {
+public class ClientHelper implements Runnable, Playable {
     private static final int CARDSINHAND = 9;
     private Socket socket;
     private PrintWriter output;
     private int cardsPlayed = 0;
     private Client client;
 
-    public ClientPlays(Socket socket, Client client) {
+    public ClientHelper(Socket socket, Client client) {
         this.client = client;
         this.socket = socket;
         try {
@@ -53,16 +53,19 @@ public class ClientPlays implements Runnable, Playable {
                        if (message.toUpperCase().equals("/NEWGAME")){
                            client.newGame();
                        }
-                       try {
-                           parsedInt = Integer.parseInt(message);
-                       }catch (NumberFormatException e) {
-                           client.renderToScreen("No Strings allowed.");
-                           continue;
-                       }
+
                        if (!Client.playerTurn) {
                            client.renderToScreen("It's not your turn...");
                            continue;
                        }
+
+                       try {
+                           parsedInt = Integer.parseInt(message);
+                       } catch (NumberFormatException e) {
+                           client.renderToScreen("Use the card numbers at left to play.");
+                           continue;
+                       }
+
                        play(message);
                        Client.playerTurn = false;
                    }
@@ -72,7 +75,6 @@ public class ClientPlays implements Runnable, Playable {
                    sc.reset();
                    cardsPlayed++;
                    Client.playerTurn = false;
-               clearScreen();
 
 
            }
@@ -93,10 +95,4 @@ public class ClientPlays implements Runnable, Playable {
         }
     }
 
-    private void clearScreen(){
-        client.renderToScreen("\033[H\033[2J");
-    }
-
-    public static void send(String confirm) {
-    }
 }

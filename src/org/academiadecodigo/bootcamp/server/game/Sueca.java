@@ -37,7 +37,8 @@ public class Sueca implements Game {
         Cards higherCard = null;
         Cards tempCard;
         Player winningPlayer = null;
-        int score = 0;
+        int scoreTeamOne = 0;
+        int scoreTeamTwo = 0;
         String currentGameHand = "";
         boolean isGameStarted = false;
         //the player that starts the first game of a lobby is always the first to
@@ -47,6 +48,7 @@ public class Sueca implements Game {
 
         if (!isGameStarted) {
             //Set card hand for each player
+            updateGameInfo(players, scoreTeamOne, scoreTeamTwo);
             prepareGame(players);
             //choose the trumpSuit
             trumpSuit = randomizeTrumpSuit();
@@ -64,20 +66,16 @@ public class Sueca implements Game {
         //don't forget o change the while condition
             while (isGameStarted) {
 
-
-
-
                 if(currentPlayer >= players.size()){
                     currentPlayer = 0;
                 }
                 try {
 
-                    isGameStarted = checkGameEnd(players, totalCardsPlayed, score);
-
+                    isGameStarted = checkGameEnd(players, totalCardsPlayed, scoreTeamOne);
 
                     playedCard = getMove(players.get(currentPlayer),players);
+
                     if (checkIfPlayerLeft(players)) {
-                        System.out.println("EXIT PLAYER LOOP");
                         playerLeft = true;
                         try {
                             Thread.sleep(2000);
@@ -86,10 +84,6 @@ public class Sueca implements Game {
                         }
                         return;
                     }
-
-                    //if (playedCard == null){
-                    //    return;
-                    //}
 
                     if(cardsInPlay.isEmpty()){
 
@@ -125,12 +119,16 @@ public class Sueca implements Game {
                     currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard.getUnicode() + "\n"; //add players and card to the string
                     totalCardsPlayed++;                                 // convert to method
                     //dealer.sendAll(players, cardsInPlay);
+                    updateGameInfo(players, scoreTeamOne, scoreTeamTwo);
                     dealer.sendAll(players, currentGameHand);
                     if(cardsInPlay.size() == NUMBER_OF_PLAYERS){
                         //added Method to tell all players the winner of the round
                         dealer.broadcastMessage(players, winningPlayer.getName() + " WINS THIS ROUND AND MAKES " + getPoints(cardsInPlay, winningPlayer, players) + " POINTS \n");
-                        if (players.indexOf(winningPlayer) == 0 || players.indexOf(winningPlayer) == 2){
-                            score += getPoints(cardsInPlay, winningPlayer, players);
+                        if (winningPlayer.getTeam() == 1) {
+                            scoreTeamOne += getPoints(cardsInPlay, winningPlayer, players);
+                        }
+                        if(winningPlayer.getTeam() == 2){
+                            scoreTeamTwo += getPoints(cardsInPlay,winningPlayer,players);
                         }
                         currentPlayer = players.indexOf(winningPlayer);
                         currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\r\nGAME HAND:\r\n"; //reset String to default
@@ -148,14 +146,41 @@ public class Sueca implements Game {
 
     }
 
+    private void updateGameInfo(List<Player> players, int scoreTeamOne, int scoreTeamTwo) {
+        dealer.broadcastMessage(players,"VICTORIES - TEAM 1: " + teamOneVictories+" TEAM 2: " + teamTwoVictories);
+        dealer.broadcastMessage(players,"SCORE - TEAM 1: " + scoreTeamOne + " TEAM 2: " + scoreTeamTwo + "\n");
+    }
+
+    /**
+     * Generates the trump suit message
+     *
+     * @param trumpSuit trump suit
+     * @return trump suit message
+     */
+
     private String generateTrumpSuitMessage(Cards.Suit trumpSuit) {
         return "\r\nTRUMP: " + trumpSuit + "\r\n";
     }
+
+    /**
+     * Adds the played card to table and removes it from player hand
+     *
+     * @param players       players in game
+     * @param currentPlayer current player
+     * @param cardsInPlay   cards in table
+     * @param playedCard    played card
+     */
 
     private void confirmPlay(List<Player> players, int currentPlayer, List<Cards> cardsInPlay, Cards playedCard) {
         cardsInPlay.add(playedCard);
         players.get(currentPlayer).removeCard(playedCard);
     }
+
+    /**
+     * Informs who is each player teammate
+     *
+     * @param players players in game
+     */
 
     private void informPlayerPartner(List<Player> players) {
         players.get(0).setTeam(1);
@@ -168,13 +193,36 @@ public class Sueca implements Game {
         players.get(3).send("\nYou're in Team " + players.get(3).getTeam() + ". Your team mate is " + players.get(1).getName());
     }
 
+    /**
+     * Randomly generates the trump suit
+     *
+     * @return the trump suit
+     */
+
     private Cards.Suit randomizeTrumpSuit() {
         return Cards.values()[Randomizer.getRandom(Cards.values().length)].getSuit();
     }
 
+    /**
+     * Allows each player to have an assigned hand
+     *
+     * @param players players in game
+     */
+
     private void prepareGame(List<Player> players) {
         dealer.dealCards(players,CARDS_PER_PLAYER, DECK_TYPE);
     }
+
+    /**
+     * Checks if the game has ended
+     * <p>
+     * Sets and broadcasts score
+     *
+     * @param players          players in game
+     * @param totalCardsPlayed total cards played during game
+     * @param score            game score
+     * @return true or false if the game has or has not end
+     */
 
     private boolean checkGameEnd(List<Player> players, int totalCardsPlayed, int score) {
         if(totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER){
@@ -207,6 +255,15 @@ public class Sueca implements Game {
         return true;
     }
 
+    /**
+     * Checks for the higher card
+     *
+     * @param playedCard played card
+     * @param higherCard higher card in table
+     * @param trumpSuit  trump suit
+     * @return higher card
+     */
+
     private Cards checkHigherCard(Cards playedCard, Cards higherCard, Cards.Suit trumpSuit) {
         System.out.println("Entered checkHigherCard");
        if (!playedCard.getSuit().equals(higherCard.getSuit())){
@@ -225,8 +282,13 @@ public class Sueca implements Game {
 
         System.out.println("Exited checkHigherCard w/ same card equal suit");
         return higherCard;
-
     }
+
+    /**
+     *@see Game#getMove(Player, List)
+     *
+     * @throws IOException
+     */
 
     @Override
     public Cards getMove(Player currentPlayer, List<Player> players) throws IOException {
@@ -253,9 +315,6 @@ public class Sueca implements Game {
             System.out.println("before null condition");
 
             if (moveString ==null){
-                System.out.println("inside null condition");
-                //players.remove(currentPlayer);
-                System.out.println("LIST SIZE " + players.size());
                 for (Player p :players) {
                     System.out.println("player " +currentPlayer + " has left");
                     p.send("PLAYERQUIT@@" + currentPlayer.getName() + " has left the game");//"PLAYERQUIT" is a reference so client can read and print
@@ -305,6 +364,16 @@ public class Sueca implements Game {
 
     }
 
+    /**
+     * Checks if the player hand has a specific suit
+     *
+     * @param player player which hand will be checked
+     *
+     * @param currentSuit the specific suit to check
+     *
+     * @return true or false if the player hand has or has not the suit
+     */
+
     private boolean playerHandHasSuit(Player player, Cards.Suit currentSuit) {
         System.out.println("entered player has suit");
         for (Cards c : player.getHand()) {
@@ -328,10 +397,6 @@ public class Sueca implements Game {
         }
         return points;
 
-    }
-    @Override
-    public void setPlayerLeft(boolean playerLeft) {
-        this.playerLeft = playerLeft;
     }
 
     /**
