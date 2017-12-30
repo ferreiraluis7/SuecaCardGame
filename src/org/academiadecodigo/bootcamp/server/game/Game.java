@@ -42,6 +42,8 @@ public interface Game {
      */
     int getScore();
 
+    void setPlayerLeft(boolean playerLeft);
+
     int getTotalPlayers();
 
     void setDealer(CardDealer dealer);

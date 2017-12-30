@@ -64,6 +64,9 @@ public class Sueca implements Game {
         //don't forget o change the while condition
             while (isGameStarted) {
 
+
+
+
                 if(currentPlayer >= players.size()){
                     currentPlayer = 0;
                 }
@@ -73,10 +76,20 @@ public class Sueca implements Game {
 
 
                     playedCard = getMove(players.get(currentPlayer),players);
-
-                    if (playedCard == null){
+                    if (checkIfPlayerLeft(players)) {
+                        System.out.println("EXIT PLAYER LOOP");
+                        playerLeft = true;
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         return;
                     }
+
+                    //if (playedCard == null){
+                    //    return;
+                    //}
 
                     if(cardsInPlay.isEmpty()){
 
@@ -128,6 +141,7 @@ public class Sueca implements Game {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
                 currentPlayer++;
             }
 
@@ -240,12 +254,11 @@ public class Sueca implements Game {
 
             if (moveString ==null){
                 System.out.println("inside null condition");
-                players.remove(currentPlayer);
-
+                //players.remove(currentPlayer);
+                System.out.println("LIST SIZE " + players.size());
                 for (Player p :players) {
                     System.out.println("player " +currentPlayer + " has left");
                     p.send("PLAYERQUIT@@" + currentPlayer.getName() + " has left the game");//"PLAYERQUIT" is a reference so client can read and print
-                    p.send("To play again, type </newGame>");
                     playerLeft = true;
                 }
               return null;
@@ -316,9 +329,10 @@ public class Sueca implements Game {
         return points;
 
     }
-
-
-
+    @Override
+    public void setPlayerLeft(boolean playerLeft) {
+        this.playerLeft = playerLeft;
+    }
 
     /**
      * @see Game#getScore()
@@ -343,5 +357,38 @@ public class Sueca implements Game {
         return playerLeft;
     }
 
+    private boolean checkIfPlayerLeft(List<Player> playersInLobby) {
+        boolean playerLeft = false;
+        List<Player> checkList = new ArrayList<>();
+        checkList.addAll(playersInLobby);
+        for(Player p : checkList) {
+            p.send("CHECKCONNECT");
+            try {
+                String read = p.readFromClient();
+            } catch (IOException e) {
 
+                try {
+                    String pName = p.getName();
+                    p.getClientSocket().close();
+                    playersInLobby.remove(p);
+                    for (Player players : playersInLobby) {
+                        players.send(pName + " has left.");
+                    }
+                    System.out.println("END FOR");
+
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+        System.out.println("IF");
+        if (playersInLobby.size() < 4) {
+            playerLeft = true;
+        }
+        System.out.println(playerLeft);
+        return playerLeft;
+    }
 }
+
+
+

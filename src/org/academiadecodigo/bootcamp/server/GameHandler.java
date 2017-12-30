@@ -33,21 +33,27 @@ public class GameHandler implements Runnable{
 
         while (true) { // delete if game doesn't ends after a number of wins
 
+
+
             if (game.isPlayerLeft() && server.getPlayerList().isEmpty()){ //IF NO PLAYERS WAITING STOP
                 System.out.println("######RUN ");
+                sendAll("No more players available... To play again, type </newGame>");
                 return;
             } else if(game.isPlayerLeft() && (!server.getPlayerList().isEmpty())) { //IF THERE ARE PLAYERS WAITING
                 try {
-                    sendAll("Cheking getting a new player...");
-                    sendAll("Starting a new game with a new player.");
+                    sendAll("Getting a new player...");
                     Thread.sleep(3000); //PARA ENGANAR E FINGIR QUE ESTA A FAZER MILHOES DE PROCESSOS COMPLICADOS
                     sendAll("\033[H\033[2J"); // CLEAR SCREEN
                     playersInLobby.add(server.getPlayerList().get(0)); //ADD THE WAITING PLAYER TO THIS LIST
                     server.getPlayerList().remove(server.getPlayerList().get(0)); //REMOVE FROM WAITING LIST
+                    System.out.println("LISTA TAMANHO " + playersInLobby.size());
                     if (playersInLobby.size() != 4) { //IF LIST IS NOT FULL YET, CONTINUE TO PICK MORE PLAYERS
                         continue;
-                    }
+                   }
                     //NEW GAME WHEN LIST IS FULL
+                    sendAll("Starting a new game with a new player.");
+                    Thread.sleep(3000); //PARA ENGANAR E FINGIR QUE ESTA A FAZER MILHOES DE PROCESSOS COMPLICADOS
+                    sendAll("\033[H\033[2J"); // CLEAR SCREEN
                     game = new Sueca();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -65,6 +71,8 @@ public class GameHandler implements Runnable{
 
         }
     }
+
+
 
     public void sendAll(String message) {
         for(Player p : playersInLobby) {

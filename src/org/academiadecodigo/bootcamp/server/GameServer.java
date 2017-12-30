@@ -54,17 +54,16 @@ public class GameServer {
             // retiramos o array para uma lista
 
 
-            int playersConnected = 0;
-            while (playersConnected < Sueca.NUMBER_OF_PLAYERS) {
+            while (playerList.size() < Sueca.NUMBER_OF_PLAYERS) {
                 try {
                     System.out.println("Waiting...");
                     Socket playerConnection = serverSocket.accept();
                     System.out.println("Player Connected.\r\n");
                     Player playerConnected = new Player(playerConnection);
+                    welcomeMessage(playerConnected);
                     totalPlayersList.add(playerConnected);
                     playerList.add(playerConnected);
                     playerNumber++;
-                    playersConnected++;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -86,6 +85,19 @@ public class GameServer {
      */
     public List<Player> getPlayerList() {
         return playerList;
+    }
+
+    public void welcomeMessage(Player player) {
+        String suecaGame = "  _________                               ________                       \n" +
+                " /   _____/__ __   ____   ____ _____     /  _____/_____    _____   ____  \n" +
+                " \\_____  \\|  |  \\_/ __ \\_/ ___\\\\__  \\   /   \\  ___\\__  \\  /     \\_/ __ \\ \n" +
+                " /        \\  |  /\\  ___/\\  \\___ / __ \\_ \\    \\_\\  \\/ __ \\|  Y Y  \\  ___/ \n" +
+                "/_______  /____/  \\___  >\\___  >____  /  \\______  (____  /__|_|  /\\___  >\n" +
+                "        \\/            \\/     \\/     \\/          \\/     \\/      \\/     \\/ ";
+
+        player.send(suecaGame);
+        player.send("Welcome " + player.getName() + "! Waiting for players...");
+
     }
 
     public List<Player> getTotalPlayersList() {

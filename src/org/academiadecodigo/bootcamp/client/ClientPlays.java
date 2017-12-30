@@ -97,4 +97,6 @@ public class ClientPlays implements Runnable, Playable {
         client.renderToScreen("\033[H\033[2J");
     }
 
+    public static void send(String confirm) {
+    }
 }

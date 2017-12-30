@@ -16,7 +16,7 @@ public class Client {
     public static boolean playerTurn = false;
     private Socket clientSocket = null;
     private BufferedReader input = null;
-
+    private PrintWriter output = null;
     public static void main(String[] args) {
         Client client = new Client();
         client.start();
@@ -69,8 +69,11 @@ public class Client {
         if (readLine == null) {
             System.exit(1);
         }
-
-        if (readLine.contains("//")) {
+        if (readLine.equals("CHECKCONNECT")) {
+            output = new PrintWriter(clientSocket.getOutputStream(), true);
+            output.println("YES");
+            output.flush();
+        } else if (readLine.contains("//")) {
             String[] readLineSplit = readLine.split(",,");
             String[] handSplit = readLineSplit[0].split("//");
             for(int counter = 0; counter < handSplit.length; counter++) {
