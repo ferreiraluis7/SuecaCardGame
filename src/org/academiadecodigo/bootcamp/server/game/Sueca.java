@@ -307,7 +307,7 @@ public class Sueca implements Game {
      * @param higherCard higher card in table
      *
      * @param trumpSuit  trump suit
-     *                   
+     *
      * @return higher card
      */
     private Cards checkHigherCard(Cards playedCard, Cards higherCard, Cards.Suit trumpSuit) {

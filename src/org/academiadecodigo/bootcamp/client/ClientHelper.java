@@ -58,7 +58,7 @@ public class ClientHelper implements Runnable, Playable {
                     client.newGame();
                 }
 
-                if (!Client.playerTurn) {
+                if (!client.isPlayerTurn()) {
                     client.renderToScreen("It's not your turn...");
                     continue;
                 }
@@ -71,16 +71,14 @@ public class ClientHelper implements Runnable, Playable {
                 }
 
                 play(message);
-                Client.playerTurn = false;
+                client.setPlayerTurn(false);
             }
-            if (!Client.playerTurn) {
+            if (!client.isPlayerTurn()) {
                 continue;
             }
             sc.reset();
             cardsPlayed++;
-            Client.playerTurn = false;
-
-
+            client.setPlayerTurn(false);
         }
     }
 

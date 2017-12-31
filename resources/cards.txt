@@ -1,3 +1,0 @@
-In this text file, all the card codes will be specified in order to match the keyboard inputs with the correct cards.
-Also this will be needed to decode the hand information received from the server.
-

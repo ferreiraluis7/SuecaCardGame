@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 public class Client {
     private final static int PORT = 8080;
     private static String HOST = "localhost";
-    public static boolean playerTurn = false;
+    private boolean playerTurn = false;
     private Socket clientSocket = null;
     private BufferedReader input = null;
     private PrintWriter output = null;
@@ -143,5 +143,12 @@ public class Client {
         start();
     }
 
+    public boolean isPlayerTurn() {
+        return playerTurn;
+    }
+
+    public void setPlayerTurn(boolean playerTurn) {
+        this.playerTurn = playerTurn;
+    }
 }
 
