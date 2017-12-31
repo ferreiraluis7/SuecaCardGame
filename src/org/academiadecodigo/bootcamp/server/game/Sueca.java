@@ -46,7 +46,7 @@ public class Sueca implements Game {
 
         if (!isGameStarted) {
             //Set card hand for each player
-            updateGameInfo(players, scoreTeamOne, scoreTeamTwo);
+            updateScoreInfo(players, scoreTeamOne, scoreTeamTwo);
             prepareGame(players);
             //choose the trumpSuit
             trumpSuit = randomizeTrumpSuit();
@@ -92,8 +92,7 @@ public class Sueca implements Game {
                     totalCardsPlayed++;
                     currentPlayer++;
 
-                    updateGameInfo(players, scoreTeamOne, scoreTeamTwo);
-                    dealer.sendAll(players, currentGameHand);
+                    updateGameInfo(players, scoreTeamOne, scoreTeamTwo, currentGameHand);
                     continue;
                 }
 
@@ -113,10 +112,9 @@ public class Sueca implements Game {
                     higherCard = tempCard;
                 }
                 currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard.getUnicode() + "\n"; //add players and card to the string
-                totalCardsPlayed++;                                 // convert to method
+                totalCardsPlayed++;
 
-                updateGameInfo(players, scoreTeamOne, scoreTeamTwo);
-                dealer.sendAll(players, currentGameHand);
+                updateGameInfo(players, scoreTeamOne, scoreTeamTwo, currentGameHand);
 
                 if (cardsInPlay.size() == NUMBER_OF_PLAYERS) {
                     dealer.broadcastMessage(players, winningPlayer.getName() + " WINS THIS ROUND AND MAKES " + getPoints(cardsInPlay, winningPlayer, players) + " POINTS \n");
@@ -145,13 +143,31 @@ public class Sueca implements Game {
     }
 
     /**
+     * Updates the game information
+     *
+     * @param players in game players
+     *
+     * @param scoreTeamOne team one score
+     *
+     * @param scoreTeamTwo team two score
+     *
+     * @param currentGameHand current game hand
+     */
+    private void updateGameInfo(List<Player> players, int scoreTeamOne, int scoreTeamTwo, String currentGameHand) {
+        updateScoreInfo(players, scoreTeamOne, scoreTeamTwo);
+        dealer.sendAll(players, currentGameHand);
+    }
+
+    /**
      * Updates the score information
      *
-     * @param players      in game players
+     * @param players in game players
+     *
      * @param scoreTeamOne team one score
+     *
      * @param scoreTeamTwo team two score
      */
-    private void updateGameInfo(List<Player> players, int scoreTeamOne, int scoreTeamTwo) {
+    private void updateScoreInfo(List<Player> players, int scoreTeamOne, int scoreTeamTwo) {
         dealer.broadcastMessage(players, "VICTORIES - TEAM 1: " + teamOneVictories + " TEAM 2: " + teamTwoVictories);
         dealer.broadcastMessage(players, "SCORE - TEAM 1: " + scoreTeamOne + " TEAM 2: " + scoreTeamTwo + "\n");
     }
@@ -160,6 +176,7 @@ public class Sueca implements Game {
      * Generates the trump suit message
      *
      * @param trumpSuit trump suit
+     *
      * @return trump suit message
      */
     private String generateTrumpSuitMessage(Cards.Suit trumpSuit) {
@@ -174,7 +191,6 @@ public class Sueca implements Game {
      * @param cardsInPlay   cards in table
      * @param playedCard    played card
      */
-
     private void confirmPlay(List<Player> players, int currentPlayer, List<Cards> cardsInPlay, Cards playedCard) {
         cardsInPlay.add(playedCard);
         players.get(currentPlayer).removeCard(playedCard);
@@ -217,12 +233,13 @@ public class Sueca implements Game {
 
     /**
      * Checks if the game has ended
-     * <p>
-     * Sets and broadcasts score
      *
-     * @param players          players in game
+     * @param players players in game
+     *
      * @param totalCardsPlayed total cards played during game
-     * @param score            game score
+     *
+     * @param score game score for team One
+     *
      * @return true or false if the game has or has not end
      */
     private boolean checkGameEnd(List<Player> players, int totalCardsPlayed, int score) {
@@ -230,30 +247,16 @@ public class Sueca implements Game {
             System.out.println("Entered end game condition");
             dealer.broadcastMessage(players, "\n\n GAME HAS ENDED \n");
 
-            if (score < TOTAL_POINTS / 2) {
-                teamTwoVictories++;
-                dealer.broadcastMessage(players, "Team Two has won this game With " + (TOTAL_POINTS - score) + " points");
-                if (score < 30) {
-                    teamTwoVictories++;
-                    dealer.broadcastMessage(players, "Team two has scored more than 90 points, double victory for team Two");
-                }
-            } else if (score > TOTAL_POINTS / 2) {
-                teamOneVictories++;
-                dealer.broadcastMessage(players, "Team One has won this game With " + score + " points");
-                if (score > 90) {
-                    teamTwoVictories++;
-                    dealer.broadcastMessage(players, "Tem One has scored more than 90 points, double victory for team One");
-                }
-            } else {
-                dealer.broadcastMessage(players, "Game tie");
-            }
+            setGameScore(players, score);
+
             dealer.broadcastMessage(players, "\n GLOBAL SCORE:");
             dealer.broadcastMessage(players, "TEAM ONE: " + teamOneVictories + " TEAM TWO: " + teamTwoVictories + "\n");
+
             startingPlayer++;
             if (startingPlayer >= NUMBER_OF_PLAYERS) {
                 startingPlayer = 0;
             }
-            //set, show and send game score ++ update team score ++ call for a new game(new method) ++ GAME SETS?? create playsets method??
+
             playGame(players);
             return false;
         }
@@ -261,11 +264,50 @@ public class Sueca implements Game {
     }
 
     /**
+     * Sets the game score according to Sueca game rules
+     *
+     * @param players in game players
+     *
+     * @param score team One score
+     */
+
+    private void setGameScore(List<Player> players, int score) {
+        if (score < TOTAL_POINTS / 2) {
+            teamTwoVictories++;
+            dealer.broadcastMessage(players, "Team Two has won this game With " + (TOTAL_POINTS - score) + " points");
+            if (score == 0){
+                teamTwoVictories+=3;
+                dealer.broadcastMessage(players, "Team Two has scored 120 points, quadruple victory for team Two");
+            }
+            if (score < 30) {
+                teamTwoVictories++;
+                dealer.broadcastMessage(players, "Team Two has scored more than 90 points, double victory for team Two");
+            }
+        } else if (score > TOTAL_POINTS / 2) {
+            teamOneVictories++;
+            dealer.broadcastMessage(players, "Team One has won this game With " + score + " points");
+            if (score == TOTAL_POINTS) {
+                teamOneVictories += 3;
+                dealer.broadcastMessage(players, "Team One has scored 120 points, quadruple victory for team One");
+            }
+            if (score > 90) {
+                teamOneVictories++;
+                dealer.broadcastMessage(players, "Tem One has scored more than 90 points, double victory for team One");
+            }
+        } else {
+            dealer.broadcastMessage(players, "Game tie");
+        }
+    }
+
+    /**
      * Checks for the higher card
      *
      * @param playedCard played card
+     *
      * @param higherCard higher card in table
+     *
      * @param trumpSuit  trump suit
+     *                   
      * @return higher card
      */
     private Cards checkHigherCard(Cards playedCard, Cards higherCard, Cards.Suit trumpSuit) {
