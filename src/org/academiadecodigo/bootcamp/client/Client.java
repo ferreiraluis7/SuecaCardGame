@@ -143,10 +143,16 @@ public class Client {
         start();
     }
 
+    /**
+     * Gets true or false if it is or isn't the player turn
+     */
     public boolean isPlayerTurn() {
         return playerTurn;
     }
 
+    /**
+     * Sets the player turn true or false
+     */
     public void setPlayerTurn(boolean playerTurn) {
         this.playerTurn = playerTurn;
     }
