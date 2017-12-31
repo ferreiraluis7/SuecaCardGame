@@ -8,7 +8,7 @@ import org.academiadecodigo.bootcamp.server.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameHandler implements Runnable{
+public class GameHandler implements Runnable {
     private List<Player> playersInLobby;
     private Game game;
     private GameServer server;
@@ -27,34 +27,36 @@ public class GameHandler implements Runnable{
      */
     @Override
     public void run() {
-            Thread.currentThread().setName("Lobby - " + lobbyNumber);
-
-
+        Thread.currentThread().setName("Lobby - " + lobbyNumber);
 
         while (true) { // delete if game doesn't ends after a number of wins
 
-
-
-            if (game.isPlayerLeft() && server.getPlayerList().isEmpty()){ //IF NO PLAYERS WAITING STOP
+            if (game.isPlayerLeft() && server.getPlayerList().isEmpty()) { //IF NO PLAYERS WAITING STOP
                 System.out.println("######RUN ");
                 sendAll("No more players available... To play again, type </newGame>");
                 return;
-            } else if(game.isPlayerLeft() && (!server.getPlayerList().isEmpty())) { //IF THERE ARE PLAYERS WAITING
+
+            } else if (game.isPlayerLeft() && (!server.getPlayerList().isEmpty())) { //IF THERE ARE PLAYERS WAITING
+
                 try {
                     sendAll("Getting a new player...");
                     Thread.sleep(3000); //PARA ENGANAR E FINGIR QUE ESTA A FAZER MILHOES DE PROCESSOS COMPLICADOS
                     sendAll("\033[H\033[2J"); // CLEAR SCREEN
+
                     playersInLobby.add(server.getPlayerList().get(0)); //ADD THE WAITING PLAYER TO THIS LIST
                     server.getPlayerList().get(0).send("Joined " + Thread.currentThread().getName());
                     server.getPlayerList().remove(server.getPlayerList().get(0)); //REMOVE FROM WAITING LIST
+
                     if (playersInLobby.size() != 4) { //IF LIST IS NOT FULL YET, CONTINUE TO PICK MORE PLAYERS
                         continue;
-                   }
+                    }
+
                     //NEW GAME WHEN LIST IS FULL
                     sendAll("Starting a new game with a new player.");
                     Thread.sleep(3000); //PARA ENGANAR E FINGIR QUE ESTA A FAZER MILHOES DE PROCESSOS COMPLICADOS
                     sendAll("\033[H\033[2J"); // CLEAR SCREEN
                     game = new Sueca();
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -63,21 +65,17 @@ public class GameHandler implements Runnable{
             System.out.println(Thread.currentThread().getName() + " is running.\r\n");
             game.setDealer(new CardDealer());
             game.playGame(playersInLobby);
-
-
-
-
-
-
         }
     }
 
-
-
+    /**
+     * Sends a message to all player in a lobby
+     *
+     * @param message message to be sent
+     */
     public void sendAll(String message) {
-        for(Player p : playersInLobby) {
+        for (Player p : playersInLobby) {
             p.send(message);
         }
     }
-
 }

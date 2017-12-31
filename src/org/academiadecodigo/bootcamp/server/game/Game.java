@@ -10,14 +10,17 @@ public interface Game {
 
     /**
      * Starts and/or runs the game
-     * @param players
+     *
+     * @param players game players
      */
     void playGame(List<Player> players);
 
     /**
      * wait for a move from the specified player
-     * @param currentPlayer
-     * @return
+     *
+     * @param currentPlayer the current player
+     *
+     * @return the card played
      */
     Cards getMove(Player currentPlayer,List<Player> players) throws IOException;
 
@@ -41,12 +44,6 @@ public interface Game {
      * @return the index of the next player to play
      */
     int getScore();
-
-    /**
-     * Gets the total number of players
-     *
-     */
-    int getTotalPlayers();
 
     /**
      * Sets the game dealer

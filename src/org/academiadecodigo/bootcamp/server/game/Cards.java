@@ -69,7 +69,7 @@ public enum Cards {
     private final String unicode;
     private final String unicode2;
 
-    private Cards(String name, Rank rank, Suit suit,  String unicode, String unicode2) {
+    Cards(String name, Rank rank, Suit suit,  String unicode, String unicode2) {
         this.completeName = name;
         this.rank = rank;
         this.suit = suit;
@@ -77,27 +77,48 @@ public enum Cards {
         this.unicode2 = unicode2;
     }
 
+    /**
+     * Gets the complete name of the card
+     */
     public String getCompleteName() {
         return completeName;
     }
 
+    /**
+     * Gets the rank of the card
+     */
     public Rank getRank() {
         return rank;
     }
 
+    /**
+     * Gets the suit of the card
+     */
     public Suit getSuit() {
         return suit;
     }
 
+    /**
+     * Gets the unicode of the card
+     */
     public String getUnicode() {
         return unicode;
     }
+
+    /**
+     * Gets an alternative unicode of the card
+     */
 
     public String getUnicode2() {
         return unicode2;
     }
 
-    public  static   String encode(List<Cards> cards){
+    /**
+     * Encodes a list of card so they can be sent to the clients
+     * @param cards cards to be encoded
+     * @return encoded list of cards
+     */
+    public static String encode(List<Cards> cards){
         System.out.println("encoding card list : " + cards.toString() + "\n");
         String encodedCards = "";
         for (int i = 0; i < cards.size() ; i++) {
@@ -151,10 +172,16 @@ public enum Cards {
             this.suecaPoints = suecaPoints;
         }
 
+        /**
+         * Gets the rank of the card according to Sueca game rules
+         */
         public int getSuecaRank() {
             return suecaRank;
         }
 
+        /**
+         * Gets the points of the card according to Sueca game rules
+         */
         public int getSuecaPoints() {
             return suecaPoints;
         }

@@ -17,7 +17,7 @@ public class GameServer {
     private ServerSocket serverSocket;
     private List<Player> totalPlayersList;
     private List<Player> playerList;
-    public static int playerNumber = 1; //PARA ATRIBUIR NOMES DINAMICAMENTE AOS PLAYERS
+    public static int playerNumber = 1; //To assign dynamic names to the players
 
 
     public GameServer() {
@@ -41,41 +41,36 @@ public class GameServer {
      * Creates Players
      */
     public void start() {
-        //server methods here
-
         ExecutorService lobby = Executors.newCachedThreadPool();
         int lobbyNumber = 1;
+
         while (true) {
             playerList = new ArrayList<>();
-
-            //cesar : faz-me mais sentido que o array seja dimensionado conforme o valor que de uma variavel
-            // estática defenida no Game
-
-            // retiramos o array para uma lista
-
 
             while (playerList.size() < Sueca.NUMBER_OF_PLAYERS) {
                 try {
                     System.out.println("Waiting...");
                     Socket playerConnection = serverSocket.accept();
                     System.out.println("Player Connected.\r\n");
+
                     Player playerConnected = new Player(playerConnection);
                     welcomeMessage(playerConnected);
+
                     totalPlayersList.add(playerConnected);
                     playerList.add(playerConnected);
                     playerNumber++;
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
             System.out.println("new Lobby");
+
             lobby.submit(new GameHandler(playerList, this, lobbyNumber));
             lobbyNumber++;
+
             playerList.clear();
-
-
         }
-
     }
 
     /**
@@ -86,6 +81,12 @@ public class GameServer {
     public List<Player> getPlayerList() {
         return playerList;
     }
+
+    /**
+     * Generates and shows the welcome message
+     *
+     * @param player player to see the welcome message
+     */
 
     public void welcomeMessage(Player player) {
         String suecaGame = "  _________                               ________                       \n" +
@@ -98,9 +99,5 @@ public class GameServer {
         player.send(suecaGame);
         player.send("Welcome " + player.getName() + "! Waiting for players...");
 
-    }
-
-    public List<Player> getTotalPlayersList() {
-        return totalPlayersList;
     }
 }

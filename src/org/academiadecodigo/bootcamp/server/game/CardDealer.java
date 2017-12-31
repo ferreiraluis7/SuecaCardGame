@@ -18,7 +18,6 @@ public class CardDealer {
      *
      * @param type type of deck to play
      */
-
     public void dealCards(List<Player> players, int cardsPerPlayer, DeckType type){
 
         List<Cards> deck = getDeck(type);
@@ -31,8 +30,6 @@ public class CardDealer {
 
     }
 
-
-
     /**
      * Draws cards from a specific deck
      *
@@ -40,7 +37,6 @@ public class CardDealer {
      *
      * @return a hand of cards
      */
-
     public List<Cards> drawCards(List<Cards> deck, int cardsPerPlayer) {
         if (deck.size()<= cardsPerPlayer){
             deck = sortCards(deck);
@@ -102,7 +98,6 @@ public class CardDealer {
             }
         }
 
-
         sortedHand.addAll(sortCardsByRank(clubsHand));
         sortedHand.addAll(sortCardsByRank(spadesHand));
         sortedHand.addAll(sortCardsByRank(heartsHand));
@@ -117,7 +112,6 @@ public class CardDealer {
      *
      * @return shuffled deck
      */
-
     private List<Cards> shuffleDeck(List<Cards> deck){
         ArrayList<Cards> tempDeck = new ArrayList<>();
         int numberOfShuffles = Randomizer.getRandom(10,20);
@@ -142,7 +136,6 @@ public class CardDealer {
      *
      * @return choosen deck
      */
-
     private ArrayList<Cards> getDeck(DeckType type) {
         ArrayList<Cards> deck = new ArrayList<>();
 
@@ -175,7 +168,6 @@ public class CardDealer {
      *
      * @param cardsInPlay cards in table
      */
-
     public void sendAll(List<Player> players, String cardsInPlay) {
         for (Player p: players) {
             p.send(Cards.encode(p.getHand()) + ",," + cardsInPlay);
@@ -189,7 +181,6 @@ public class CardDealer {
      *
      * @param message message to be broadcast
      */
-
     public void broadcastMessage(List<Player> players, String message){
         for (Player p: players) {
             p.send(message);
@@ -199,6 +190,6 @@ public class CardDealer {
 
     public enum DeckType {
         REGIONAL,
-        TRADITIONAL;
+        TRADITIONAL
     }
 }

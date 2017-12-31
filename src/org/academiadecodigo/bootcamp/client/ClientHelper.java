@@ -23,68 +23,78 @@ public class ClientHelper implements Runnable, Playable {
     }
 
 
-
+    /**
+     * @see Runnable#run()
+     *
+     * Sends information to server
+     */
     @Override
     public void run() {
 
-            Scanner sc = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
 
 
-            //change while later
-           while(true) {
+        //change while later
+        while (true) {
 
-               String message = "-1";
-
-
-               // THE PARSEINT METHOD TROWS AN EXCEPTION IF THE STRING IS NOT A NUMBER
-               int parsedInt = 0;
-               String wronglyEnteredString;
-               try {
-                  parsedInt = Integer.parseInt(message);
-                  wronglyEnteredString = "";
-               } catch (NumberFormatException e){
-
-                    wronglyEnteredString = "error";
-               }
-
-                   while (parsedInt < 0 || parsedInt >= CARDSINHAND - cardsPlayed || !wronglyEnteredString.isEmpty()) {
-
-                       message = sc.nextLine();
-                       if (message.toUpperCase().equals("/NEWGAME")){
-                           client.newGame();
-                       }
-
-                       if (!Client.playerTurn) {
-                           client.renderToScreen("It's not your turn...");
-                           continue;
-                       }
-
-                       try {
-                           parsedInt = Integer.parseInt(message);
-                       } catch (NumberFormatException e) {
-                           client.renderToScreen("Use the card numbers at left to play.");
-                           continue;
-                       }
-
-                       play(message);
-                       Client.playerTurn = false;
-                   }
-                   if (!Client.playerTurn) {
-                       continue;
-                   }
-                   sc.reset();
-                   cardsPlayed++;
-                   Client.playerTurn = false;
+            String message = "-1";
 
 
-           }
+            // THE PARSEINT METHOD TROWS AN EXCEPTION IF THE STRING IS NOT A NUMBER
+            int parsedInt = 0;
+            String wronglyEnteredString;
+            try {
+                parsedInt = Integer.parseInt(message);
+                wronglyEnteredString = "";
+            } catch (NumberFormatException e) {
+
+                wronglyEnteredString = "error";
+            }
+
+            while (parsedInt < 0 || parsedInt >= CARDSINHAND - cardsPlayed || !wronglyEnteredString.isEmpty()) {
+
+                message = sc.nextLine();
+                if (message.toUpperCase().equals("/NEWGAME")) {
+                    client.newGame();
+                }
+
+                if (!Client.playerTurn) {
+                    client.renderToScreen("It's not your turn...");
+                    continue;
+                }
+
+                try {
+                    parsedInt = Integer.parseInt(message);
+                } catch (NumberFormatException e) {
+                    client.renderToScreen("Use the card numbers at left to play.");
+                    continue;
+                }
+
+                play(message);
+                Client.playerTurn = false;
+            }
+            if (!Client.playerTurn) {
+                continue;
+            }
+            sc.reset();
+            cardsPlayed++;
+            Client.playerTurn = false;
+
+
+        }
     }
 
+    /**
+     * @see Playable#checkKeyboardInput(String)
+     */
     @Override
     public boolean checkKeyboardInput(String input) {
         return false;
     }
 
+    /**
+     * @see Playable#play(String)
+     */
     @Override
     public void play(String move) {
         try {
@@ -94,5 +104,4 @@ public class ClientHelper implements Runnable, Playable {
             e.printStackTrace();
         }
     }
-
 }

@@ -98,28 +98,45 @@ public class Player {
         this.name = name;
     }
 
+    /**
+     * Sets the player's hand
+     *
+     * @param hand player's hand
+     */
     public void setHand(List<Cards> hand) {
         this.hand = hand;
     }
 
+    /**
+     * Sends a message to the corresponding client
+     *
+     * @param string message to be sent
+     */
     public void send(String string) {
         System.out.println("PLAYER SENT MESSAGE TO CLIENT: " + string + "\n");
         output.println(string);
         output.flush();
-
-
-
-
     }
 
+    /**
+     * Receives message from the corresponding client
+     *
+     * @return message received
+     *
+     * @throws IOException
+     */
     public String readFromClient() throws IOException {
        return input.readLine();
     }
 
+    /**
+     * Sets the player's team
+     *
+     * @param team player's hand
+     */
     public void setTeam(int team) {
         this.team = team;
     }
-
 }
 
 
