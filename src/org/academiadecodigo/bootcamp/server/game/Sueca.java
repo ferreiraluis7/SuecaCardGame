@@ -50,7 +50,6 @@ public class Sueca implements Game {
             prepareGame(players);
             //choose the trumpSuit
             trumpSuit = randomizeTrumpSuit();
-            System.out.println("TRUMP IS " + trumpSuit);
             currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\r\nGAME HAND:\r\n";
             informPlayerPartner(players);
             dealer.broadcastMessage(players, generateTrumpSuitMessage(trumpSuit));
@@ -98,13 +97,12 @@ public class Sueca implements Game {
 
 
                 if (checkMove(players.get(currentPlayer), playedCard, currentSuit)) {
-                    System.out.println("Entered renuncia condition");
+                    System.out.println(players.get(currentPlayer).getName() + " tried to cheat");
                     players.get(currentPlayer).send("You are not allowed to play that card, please play another");  //INNER CLASS W/ MESSAGES BUILDER METHODS
                     continue;
                 }
 
                 confirmPlay(players, currentPlayer, cardsInPlay, playedCard);
-                System.out.println("Entered the not first play segment");
                 tempCard = checkHigherCard(playedCard, higherCard, trumpSuit);
 
                 if (!tempCard.equals(higherCard)) {
@@ -244,7 +242,7 @@ public class Sueca implements Game {
      */
     private boolean checkGameEnd(List<Player> players, int totalCardsPlayed, int score) {
         if (totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER) {
-            System.out.println("Entered end game condition");
+            System.out.println("Game ended\n");
             dealer.broadcastMessage(players, "\n\n GAME HAS ENDED \n");
 
             setGameScore(players, score);
@@ -257,6 +255,7 @@ public class Sueca implements Game {
                 startingPlayer = 0;
             }
 
+            System.out.println("Starting a new game.\n");
             playGame(players);
             return false;
         }
@@ -315,20 +314,16 @@ public class Sueca implements Game {
 
         if (!playedCard.getSuit().equals(higherCard.getSuit())) {
             if (!playedCard.getSuit().equals(trumpSuit)) {
-                System.out.println("Exited checkHigherCard w/ same card because different suit");
                 return higherCard;
             }
 
-            System.out.println("Exited checkHigherCard w/ trump card");
             return playedCard;
         }
 
         if (playedCard.getRank().getSuecaRank() > higherCard.getRank().getSuecaRank()) {
-            System.out.println("Exited checkHigherCard w/ higher card");
             return playedCard;
         }
 
-        System.out.println("Exited checkHigherCard w/ same card equal suit");
         return higherCard;
     }
 
@@ -349,40 +344,37 @@ public class Sueca implements Game {
         }
 
         while (true) {
-            System.out.println("enterd getmove loop");
+
             String moveString = null;
             try {
                 moveString = currentPlayer.readFromClient();
 
             } catch (SocketException e) {
-                System.err.println("Player has left");
+                System.err.println("Player has left\n");
             }
-
-            System.out.println("moveString = " + moveString);
-            System.out.println("before null condition");
 
             if (moveString == null) {
                 for (Player p : players) {
-                    System.out.println("player " + currentPlayer + " has left");
+                    System.out.println(currentPlayer.getName() + " has left\n");
                     p.send("PLAYERQUIT@@" + currentPlayer.getName() + " has left the game");//"PLAYERQUIT" is a reference so client can read and print
                     playerLeft = true;
                 }
                 return null;
             }
-            System.out.println("player said " + moveString);
+
             try {
                 int cardIndex = Integer.parseInt(moveString);
+
                 if (cardIndex < 0 || cardIndex >= currentPlayer.getHand().size()) {
-                    System.out.println("card index higher/lower than expected");
+
                     currentPlayer.send("It is your turn, please give us a card you have");
                     continue;
                 }
 
                 Cards card = currentPlayer.getHand().get(cardIndex);
 
-                System.out.println("Player" + " played " + card);
+                System.out.println(currentPlayer.getName() + " played " + card.getCompleteName() + ".\n");
 
-                System.out.println("exited get move");
                 return card;
 
 
@@ -398,7 +390,6 @@ public class Sueca implements Game {
      */
     @Override
     public boolean checkMove(Player player, Cards card, Cards.Suit currentSuit) {
-        System.out.println("renuncia: " + (playerHandHasSuit(player, currentSuit) && !card.getSuit().equals(currentSuit)));
 
         return (playerHandHasSuit(player, currentSuit) && !card.getSuit().equals(currentSuit));  //check Renuncia
 
@@ -414,7 +405,7 @@ public class Sueca implements Game {
      * @return true or false if the player hand has or has not the suit
      */
     private boolean playerHandHasSuit(Player player, Cards.Suit currentSuit) {
-        System.out.println("entered player has suit");
+
         for (Cards c : player.getHand()) {
             if (c.getSuit().equals(currentSuit)) {
                 return true;

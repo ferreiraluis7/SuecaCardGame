@@ -32,7 +32,6 @@ public class GameHandler implements Runnable {
         while (true) { // delete if game doesn't ends after a number of wins
 
             if (game.isPlayerLeft() && server.getPlayerList().isEmpty()) { //IF NO PLAYERS WAITING STOP
-                System.out.println("######RUN ");
                 sendAll("No more players available... To play again, type </newGame>");
                 return;
 

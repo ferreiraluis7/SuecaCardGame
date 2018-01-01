@@ -111,7 +111,7 @@ public enum Cards {
      * @return encoded list of cards
      */
     static String encode(List<Cards> cards){
-        System.out.println("encoding card list : " + cards.toString() + "\n");
+        System.out.println("encoding card list.\n");
         String encodedCards = "";
         for (int i = 0; i < cards.size() ; i++) {
 

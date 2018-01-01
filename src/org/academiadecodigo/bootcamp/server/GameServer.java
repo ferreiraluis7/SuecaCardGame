@@ -48,9 +48,9 @@ public class GameServer {
 
             while (playerList.size() < Sueca.NUMBER_OF_PLAYERS) {
                 try {
-                    System.out.println("Waiting...");
+                    System.out.println("Waiting...\n");
                     Socket playerConnection = serverSocket.accept();
-                    System.out.println("Player Connected.\r\n");
+                    System.out.println("Player Connected from " + playerConnection.getInetAddress() + " at port " + serverSocket.getLocalPort() + ".\r\n");
 
                     Player playerConnected = new Player(playerConnection, playerNumber);
                     welcomeMessage(playerConnected);
@@ -63,7 +63,7 @@ public class GameServer {
                     e.printStackTrace();
                 }
             }
-            System.out.println("new Lobby");
+            System.out.println("Lobby " + lobbyNumber + " started.");
 
             lobby.submit(new GameHandler(playerList, this, lobbyNumber));
             lobbyNumber++;

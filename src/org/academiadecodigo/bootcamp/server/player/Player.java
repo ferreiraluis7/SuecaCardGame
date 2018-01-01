@@ -28,7 +28,7 @@ public class Player {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.name = "Player " + nameSuffix ;
+        this.name = "Player " + nameSuffix;
 
     }
 
@@ -36,11 +36,10 @@ public class Player {
      * Removes card from player's hand
      *
      * @param card card to be removed
-     *
      * @return removed card
      */
-    public void removeCard(Cards card){
-        System.out.println("PLAYER " + name + " REMOVED " + card.getCompleteName() + " from hand");
+    public void removeCard(Cards card) {
+        System.out.println(name + " removed " + card.getCompleteName() + " from hand. \n");
         hand.remove(card);
     }
 
@@ -95,7 +94,7 @@ public class Player {
      * @param string message to be sent
      */
     public void send(String string) {
-        System.out.println("PLAYER SENT MESSAGE TO CLIENT: " + string + "\n");
+        System.out.println(name + " sent a message to corresponding client at " + clientSocket.getInetAddress() + ".\r\n");
         output.println(string);
         output.flush();
     }
@@ -108,7 +107,8 @@ public class Player {
      * @throws IOException
      */
     public String readFromClient() throws IOException {
-       return input.readLine();
+        System.out.println(name + " received a message from corresponding client at " + clientSocket.getInetAddress() + ".\r\n");
+        return input.readLine();
     }
 
     /**
