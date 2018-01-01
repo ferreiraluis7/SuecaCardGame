@@ -12,7 +12,7 @@ public class ClientHelper implements Runnable, Playable {
     private int cardsPlayed = 0;
     private Client client;
 
-    public ClientHelper(Socket socket, Client client) {
+    ClientHelper(Socket socket, Client client) {
         this.client = client;
         this.socket = socket;
         try {

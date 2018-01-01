@@ -18,16 +18,16 @@ public class CardDealer {
      *
      * @param type type of deck to play
      */
-    public void dealCards(List<Player> players, int cardsPerPlayer, DeckType type){
+    void dealCards(List<Player> players, int cardsPerPlayer, DeckType type){
 
         List<Cards> deck = getDeck(type);
         deck = shuffleDeck(deck);
+
         for (Player p: players) {
             List<Cards> playerHand = drawCards(deck, cardsPerPlayer);
             p.setHand(playerHand);
             p.send(Cards.encode(playerHand));
         }
-
     }
 
     /**
@@ -37,7 +37,7 @@ public class CardDealer {
      *
      * @return a hand of cards
      */
-    public List<Cards> drawCards(List<Cards> deck, int cardsPerPlayer) {
+    private List<Cards> drawCards(List<Cards> deck, int cardsPerPlayer) {
         if (deck.size()<= cardsPerPlayer){
             deck = sortCards(deck);
             return deck;
@@ -168,7 +168,7 @@ public class CardDealer {
      *
      * @param cardsInPlay cards in table
      */
-    public void sendAll(List<Player> players, String cardsInPlay) {
+    void sendAll(List<Player> players, String cardsInPlay) {
         for (Player p: players) {
             p.send(Cards.encode(p.getHand()) + ",," + cardsInPlay);
         }
@@ -181,14 +181,14 @@ public class CardDealer {
      *
      * @param message message to be broadcast
      */
-    public void broadcastMessage(List<Player> players, String message){
+    void broadcastMessage(List<Player> players, String message){
         for (Player p: players) {
             p.send(message);
         }
 
     }
 
-    public enum DeckType {
+    enum DeckType {
         REGIONAL,
         TRADITIONAL
     }

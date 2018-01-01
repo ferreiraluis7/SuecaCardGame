@@ -106,19 +106,11 @@ public enum Cards {
     }
 
     /**
-     * Gets an alternative unicode of the card
-     */
-
-    public String getUnicode2() {
-        return unicode2;
-    }
-
-    /**
      * Encodes a list of card so they can be sent to the clients
      * @param cards cards to be encoded
      * @return encoded list of cards
      */
-    public static String encode(List<Cards> cards){
+    static String encode(List<Cards> cards){
         System.out.println("encoding card list : " + cards.toString() + "\n");
         String encodedCards = "";
         for (int i = 0; i < cards.size() ; i++) {

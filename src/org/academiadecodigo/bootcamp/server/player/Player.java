@@ -33,15 +33,6 @@ public class Player {
     }
 
     /**
-     * Allows player to play a card
-     *
-     * @param card card to be played
-     */
-    public void play(Cards card){
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * Removes card from player's hand
      *
      * @param card card to be removed
@@ -87,15 +78,6 @@ public class Player {
      */
     public List<Cards> getHand() {
         return hand;
-    }
-
-    /**
-     * Sets the player's name
-     *
-     * @param name player's name
-     */
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**

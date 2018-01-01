@@ -334,6 +334,7 @@ public class Sueca implements Game {
 
     /**
      * @throws IOException
+     *
      * @see Game#getMove(Player, List)
      */
     @Override
@@ -387,7 +388,6 @@ public class Sueca implements Game {
 
             } catch (NumberFormatException e) {
                 currentPlayer.send("invalid choice, please select a card to play");
-                continue;
             }
         }
     }

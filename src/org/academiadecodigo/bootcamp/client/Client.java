@@ -113,14 +113,14 @@ public class Client {
     /**
      * Renders the decoded message to the terminal
      */
-    public void renderToScreen(String decodedMessage) {
+    void renderToScreen(String decodedMessage) {
         System.out.println(decodedMessage);
     }
 
     /**
      * Connects to the server if possible
      *
-     * @return true or false if the connection was or wans not successfull
+     * @return true or false if the connection was or wasn't not successful
      */
     private boolean connectServer() {
         boolean serverConnected = false;
@@ -139,21 +139,21 @@ public class Client {
     /**
      * Restarts the client
      */
-    public void newGame() {
+    void newGame() {
         start();
     }
 
     /**
      * Gets true or false if it is or isn't the player turn
      */
-    public boolean isPlayerTurn() {
+    boolean isPlayerTurn() {
         return playerTurn;
     }
 
     /**
      * Sets the player turn true or false
      */
-    public void setPlayerTurn(boolean playerTurn) {
+    void setPlayerTurn(boolean playerTurn) {
         this.playerTurn = playerTurn;
     }
 }
