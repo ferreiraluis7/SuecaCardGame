@@ -1,5 +1,8 @@
 package org.academiadecodigo.bootcamp.client;
 
+import org.academiadecodigo.bootcamp.kuusisto.tinysound.Music;
+import org.academiadecodigo.bootcamp.kuusisto.tinysound.Sound;
+import org.academiadecodigo.bootcamp.kuusisto.tinysound.TinySound;
 import org.academiadecodigo.bootcamp.server.game.Cards;
 
 import java.io.BufferedReader;
@@ -37,6 +40,8 @@ public class Client {
      * Listens for server communications
      */
     private void start() {
+        TinySound.init();
+        Sound sound = TinySound.loadSound("SE/turn.wav");
         //If can't connect to server, leave.
         if (!connectServer()) {
             return;
@@ -54,6 +59,7 @@ public class Client {
                 decodeReceivedString(readLine);
                 if (readLine.contains(whenToPlay)) {
                     playerTurn = true;
+                    sound.play();
                 }
             }
         } catch (IOException e) {
