@@ -1,6 +1,5 @@
 package org.academiadecodigo.bootcamp.server;
 
-import org.academiadecodigo.bootcamp.server.game.Game;
 import org.academiadecodigo.bootcamp.server.game.Sueca;
 import org.academiadecodigo.bootcamp.server.player.Player;
 
@@ -17,7 +16,7 @@ public class GameServer {
     private ServerSocket serverSocket;
     private List<Player> totalPlayersList;
     private List<Player> playerList;
-    public static int playerNumber = 1; //To assign dynamic names to the players
+    private int playerNumber = 1; //To assign dynamic names to the players
 
 
     private GameServer() {
@@ -53,7 +52,7 @@ public class GameServer {
                     Socket playerConnection = serverSocket.accept();
                     System.out.println("Player Connected.\r\n");
 
-                    Player playerConnected = new Player(playerConnection);
+                    Player playerConnected = new Player(playerConnection, playerNumber);
                     welcomeMessage(playerConnected);
 
                     totalPlayersList.add(playerConnected);

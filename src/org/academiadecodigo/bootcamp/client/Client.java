@@ -57,7 +57,8 @@ public class Client {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Someone has left the game");
+            System.err.println("Server went down");
+            System.exit(1);
         }
     }
 

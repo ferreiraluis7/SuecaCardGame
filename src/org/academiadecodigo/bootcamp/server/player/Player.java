@@ -20,7 +20,7 @@ public class Player {
     private int team;
     private List<Cards> hand = new ArrayList<>();
 
-    public Player(Socket playerConnection) {
+    public Player(Socket playerConnection, int nameSuffix) {
         this.clientSocket = playerConnection;
         try {
             this.output = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -28,7 +28,7 @@ public class Player {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.name = "Player " + GameServer.playerNumber ;
+        this.name = "Player " + nameSuffix ;
 
     }
 
