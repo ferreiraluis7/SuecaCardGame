@@ -20,6 +20,8 @@ public class Client {
     private Socket clientSocket = null;
     private BufferedReader input = null;
     private PrintWriter output = null;
+    private Music music;
+    private Sound sound;
 
 
     public static void main(String[] args) {
@@ -42,8 +44,8 @@ public class Client {
      */
     private void start() {
         TinySound.init();
-        Sound sound = TinySound.loadSound("SE/turn.wav");
-        Music music = TinySound.loadMusic("BGM/waiting.wav");
+        sound = TinySound.loadSound("SE/turn.wav");
+        music = TinySound.loadMusic("BGM/waiting.wav");
         music.play(true);
         //If can't connect to server, leave.
         if (!connectServer()) {
@@ -57,7 +59,6 @@ public class Client {
             String whenToPlay = "It is your turn,";
 
             while (true) {
-                music.stop();
                 String readLine = input.readLine();
                 decodeReceivedString(readLine);
                 if (readLine.contains(whenToPlay)) {
@@ -91,6 +92,7 @@ public class Client {
         }
 
         if (readLine.contains("VICTORIES")) {
+            music.stop();
             clearScreen();
             renderToScreen(readLine);
             return;
