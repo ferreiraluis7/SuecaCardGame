@@ -21,6 +21,7 @@ public class Client {
     private BufferedReader input = null;
     private PrintWriter output = null;
 
+
     public static void main(String[] args) {
         if (args.length == 1) {
             HOST = args[0];
@@ -42,22 +43,25 @@ public class Client {
     private void start() {
         TinySound.init();
         Sound sound = TinySound.loadSound("SE/turn.wav");
+        Music music = TinySound.loadMusic("BGM/waiting.wav");
+        music.play(true);
         //If can't connect to server, leave.
         if (!connectServer()) {
             return;
         }
-
         ExecutorService outThread = Executors.newSingleThreadExecutor();
         outThread.execute(new ClientHelper(clientSocket, this));
         try {
+
             input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String whenToPlay = "It is your turn,";
 
             while (true) {
-
+                music.stop();
                 String readLine = input.readLine();
                 decodeReceivedString(readLine);
                 if (readLine.contains(whenToPlay)) {
+                    music.stop();
                     playerTurn = true;
                     sound.play();
                 }
