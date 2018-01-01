@@ -374,7 +374,7 @@ public class Sueca implements Game {
                 int cardIndex = Integer.parseInt(moveString);
                 if (cardIndex < 0 || cardIndex >= currentPlayer.getHand().size()) {
                     System.out.println("card index higher/lower than expected");
-                    currentPlayer.send("please give us a card you have");
+                    currentPlayer.send("It is your turn, please give us a card you have");
                     continue;
                 }
 

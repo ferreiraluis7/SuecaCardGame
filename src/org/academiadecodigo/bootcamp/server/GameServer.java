@@ -20,7 +20,7 @@ public class GameServer {
     public static int playerNumber = 1; //To assign dynamic names to the players
 
 
-    public GameServer() {
+    private GameServer() {
         try {
             serverSocket = new ServerSocket(PORT);
             playerList = new ArrayList<>();
@@ -40,7 +40,7 @@ public class GameServer {
      * Starts the game server
      * Creates Players
      */
-    public void start() {
+    private void start() {
         ExecutorService lobby = Executors.newCachedThreadPool();
         int lobbyNumber = 1;
 
@@ -78,7 +78,7 @@ public class GameServer {
      *
      * @return list of players
      */
-    public List<Player> getPlayerList() {
+    List<Player> getPlayerList() {
         return playerList;
     }
 
@@ -88,7 +88,7 @@ public class GameServer {
      * @param player player to see the welcome message
      */
 
-    public void welcomeMessage(Player player) {
+    private void welcomeMessage(Player player) {
         String suecaGame = "  _________                               ________                       \n" +
                 " /   _____/__ __   ____   ____ _____     /  _____/_____    _____   ____  \n" +
                 " \\_____  \\|  |  \\_/ __ \\_/ ___\\\\__  \\   /   \\  ___\\__  \\  /     \\_/ __ \\ \n" +

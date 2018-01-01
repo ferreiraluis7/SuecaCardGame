@@ -14,7 +14,7 @@ public class GameHandler implements Runnable {
     private GameServer server;
     private int lobbyNumber;
 
-    public GameHandler(List<Player> playersForLobby, GameServer server, int lobbyNumber) {
+    GameHandler(List<Player> playersForLobby, GameServer server, int lobbyNumber) {
         this.playersInLobby = new ArrayList<>();
         this.playersInLobby.addAll(playersForLobby);
         this.game = new Sueca();
@@ -73,7 +73,7 @@ public class GameHandler implements Runnable {
      *
      * @param message message to be sent
      */
-    public void sendAll(String message) {
+    private void sendAll(String message) {
         for (Player p : playersInLobby) {
             p.send(message);
         }
