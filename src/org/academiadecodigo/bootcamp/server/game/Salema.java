@@ -15,8 +15,6 @@ public class Salema implements Game {
     public static final int NUMBER_OF_PLAYERS = 4;
     public static final int CARDS_PER_PLAYER = 10;
     public static final CardDealer.DeckType DECK_TYPE = CardDealer.DeckType.REGIONAL;
-    private int teamOneVictories;
-    private int teamTwoVictories;
     private CardDealer dealer;
     private int startingPlayer = 0;
     private boolean playerLeft;
