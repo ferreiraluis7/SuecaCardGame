@@ -68,6 +68,10 @@ public class Sueca implements Game {
 
                 playedCard = getMove(players.get(currentPlayer), players);
 
+                if(playedCard == null){
+                    return;
+                }
+
                 if (checkIfPlayerLeft(players)) {
                     playerLeft = true;
                     try {
@@ -77,6 +81,7 @@ public class Sueca implements Game {
                     }
                     return;
                 }
+
 
                 if (cardsInPlay.isEmpty()) {
 
@@ -348,8 +353,7 @@ public class Sueca implements Game {
             String moveString = null;
             try {
                 moveString = currentPlayer.readFromClient();
-
-            } catch (SocketException e) {
+            } catch (IOException e) {
                 System.err.println("Player has left\n");
             }
 
