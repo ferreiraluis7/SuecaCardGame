@@ -18,6 +18,7 @@ public class Salema implements Game {
     private CardDealer dealer;
     private int startingPlayer = 0;
     private boolean playerLeft;
+
     private int p1GlobalScore = 0;
     private int p2GlobalScore = 0;
     private int p3GlobalScore = 0;
@@ -174,10 +175,10 @@ public class Salema implements Game {
 
 
     private void updateScoreInfo(List<Player> players,int p1Points,int p2Points,int p3Points ,int p4Points) {
-        dealer.broadcastMessage(players, "GLOBAL SCORE - Player 1: " + p1GlobalScore + " Player 2: " + p2GlobalScore +
-                " Player 3: " + p3GlobalScore +" Player 4: " + p4GlobalScore + "\n");
-        dealer.broadcastMessage(players, "Points made this game - Player 1: " + p1Points + " Player 2: " + p2Points +
-                " Player 3: " + p3Points +" Player 4: " + p4Points + "\n");
+        dealer.broadcastMessage(players, "Global Score - " + players.get(0).getName() + ": " + p1GlobalScore + " || " + players.get(1).getName() + ": " + p2GlobalScore +
+                " || " + players.get(2).getName() + ": " + p3GlobalScore + " || " + players.get(3).getName() + ": " + p4GlobalScore);
+        dealer.broadcastMessage(players, "Points made this game - " + players.get(0).getName() + ": " + p1Points + " || " + players.get(1).getName() + ": " + p2Points +
+                " || " + players.get(2).getName() + ": " + p3Points + " || " + players.get(3).getName() + ": " + p4Points);
     }
 
 
@@ -226,8 +227,8 @@ public class Salema implements Game {
             setGameScore(players, p1Points, p2Points, p3Points, p4Points);
 
             dealer.broadcastMessage(players, "\n GLOBAL SCORE:");
-            dealer.broadcastMessage(players, "Global Score - Player 1: " + p1GlobalScore + " Player 2: " + p2GlobalScore +
-                    " Player 3: " + p3GlobalScore +" Player 4: " + p4GlobalScore + "\n");
+            dealer.broadcastMessage(players, "Global Score - " + players.get(0).getName() + ": " + p1GlobalScore + " || " + players.get(1).getName() + ": " + p2GlobalScore +
+                    " || " + players.get(2).getName() + ": " + p3GlobalScore + " || " + players.get(3).getName() + ": " + p4GlobalScore);
 
             startingPlayer++;
 
@@ -279,10 +280,10 @@ public class Salema implements Game {
         p3GlobalScore += p3Points;
         p4GlobalScore += p4Points;
 
-        dealer.broadcastMessage(players, "Player 1 made" + p1Points  + " points");
-        dealer.broadcastMessage(players, "Player 2 made" + p2Points  + " points");
-        dealer.broadcastMessage(players, "Player 3 made" + p3Points  + " points");
-        dealer.broadcastMessage(players, "Player 4 made" + p4Points  + " points");
+        dealer.broadcastMessage(players, players.get(0).getName() + " made" + p1Points  + " points");
+        dealer.broadcastMessage(players, players.get(1).getName() + " made" + p2Points  + " points");
+        dealer.broadcastMessage(players, players.get(2).getName() + " made" + p3Points  + " points");
+        dealer.broadcastMessage(players, players.get(3).getName() + " made" + p4Points  + " points");
 
     }
 

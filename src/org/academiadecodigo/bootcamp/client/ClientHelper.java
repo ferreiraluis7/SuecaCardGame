@@ -59,6 +59,12 @@ public class ClientHelper implements Runnable, Playable {
                     client.newGame();
                 }
 
+                if (!client.isSetName()) {
+                    play(message);
+                    client.setSetName(true);
+                    continue;
+                }
+
                 if (!client.isPlayerTurn() && (message.toUpperCase().equals("/SUECA") || message.toUpperCase().equals("/SALEMA")) && !client.isPlayingGame()) {
                     play(message.toUpperCase());
                    continue;
