@@ -16,12 +16,13 @@ import java.util.concurrent.Executors;
 public class Client {
     private final static int PORT = 8080;
     private static String HOST = "localhost";
+
     private boolean playerTurn = false;
     private Socket clientSocket = null;
     private BufferedReader input = null;
     private PrintWriter output = null;
-    private Music music;
-    private Sound sound;
+    private boolean playingGame;
+
 
 
     public static void main(String[] args) {
@@ -29,8 +30,8 @@ public class Client {
             HOST = args[0];
         }
         if (args.length > 1) {
-            System.out.println("Usage: java -jar SuecaCardGame.jar <server IP ADDRESS> - connects to a specific server\n" +
-                    "java -jar SuecaCardGame.jar - connects to a local host (your machine)");
+            System.out.println("Usage: java -jar SuecaGameClient.jar <server IP ADDRESS> - connects to a specific server\n" +
+                    "java -jar SuecaGameClient.jar - connects to a local host (your machine)");
             System.exit(1);
         }
         Client client = new Client();
@@ -44,13 +45,13 @@ public class Client {
      */
     private void start() {
         TinySound.init();
-        sound = TinySound.loadSound("SE/turn.wav");
-        music = TinySound.loadMusic("BGM/waiting.wav");
-        music.play(true);
+        Sound sound = TinySound.loadSound("SE/turn.wav");
+        Music music = TinySound.loadMusic("BGM/waiting.wav");
         //If can't connect to server, leave.
         if (!connectServer()) {
             return;
         }
+        music.play(true);
         ExecutorService outThread = Executors.newSingleThreadExecutor();
         outThread.execute(new ClientHelper(clientSocket, this));
         try {
@@ -60,7 +61,7 @@ public class Client {
 
             while (true) {
                 String readLine = input.readLine();
-                decodeReceivedString(readLine);
+                decodeReceivedString(readLine, music);
                 if (readLine.contains(whenToPlay)) {
                     music.stop();
                     playerTurn = true;
@@ -87,16 +88,21 @@ public class Client {
      *
      * @return decoded message
      */
-    private void decodeReceivedString(String readLine) throws IOException {
+    private void decodeReceivedString(String readLine, Music music) throws IOException {
         if (readLine == null) {
             System.exit(1);
         }
 
-        if (readLine.contains("VICTORIES")) {
+        if (readLine.contains("VICTORIES") || readLine.contains("GLOBAL SCORE")) {
+            playingGame = true;
             music.stop();
             clearScreen();
             renderToScreen(readLine);
             return;
+        }
+
+        if(readLine.contains("type </newGame>")){
+            playingGame = false;
         }
 
         if (readLine.equals("CHECKCONNECT")) {
@@ -114,6 +120,7 @@ public class Client {
                 renderToScreen(readLineSplit[1]); //SOUT GAME HAND
             }
         } else if (readLine.contains("PLAYERQUIT")) {
+            playingGame = false;
             String[] readLineSplit = readLine.split("@@");
             renderToScreen(readLineSplit[1]);
             renderToScreen(input.readLine());
@@ -168,6 +175,15 @@ public class Client {
      */
     void setPlayerTurn(boolean playerTurn) {
         this.playerTurn = playerTurn;
+    }
+
+
+    void setPlayingGame(boolean playingGame) {
+        this.playingGame = playingGame;
+    }
+
+    boolean isPlayingGame() {
+        return playingGame;
     }
 }
 

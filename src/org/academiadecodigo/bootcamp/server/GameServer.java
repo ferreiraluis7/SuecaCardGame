@@ -1,5 +1,7 @@
 package org.academiadecodigo.bootcamp.server;
 
+import org.academiadecodigo.bootcamp.server.game.GameType;
+import org.academiadecodigo.bootcamp.server.game.Salema;
 import org.academiadecodigo.bootcamp.server.game.Sueca;
 import org.academiadecodigo.bootcamp.server.player.Player;
 
@@ -15,14 +17,16 @@ public class GameServer {
     private final int PORT = 8080;
     private ServerSocket serverSocket;
     private List<Player> totalPlayersList;
-    private List<Player> playerList;
+    private List<Player> suecaPlayerList;
+    private List<Player> salemaPlayerList;
     private int playerNumber = 1; //To assign dynamic names to the players
+    private int lobbyNumber = 0;
 
 
     private GameServer() {
         try {
             serverSocket = new ServerSocket(PORT);
-            playerList = new ArrayList<>();
+            suecaPlayerList = new ArrayList<>();
             totalPlayersList = new ArrayList<>();
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,34 +45,31 @@ public class GameServer {
      */
     private void start() {
         ExecutorService lobby = Executors.newCachedThreadPool();
-        int lobbyNumber = 1;
+        ExecutorService selectGame = Executors.newCachedThreadPool();
+        salemaPlayerList = new ArrayList<>();
+        suecaPlayerList = new ArrayList<>();
+
 
         while (true) {
-            playerList = new ArrayList<>();
 
-            while (playerList.size() < Sueca.NUMBER_OF_PLAYERS) {
-                try {
-                    System.out.println("Waiting...\n");
-                    Socket playerConnection = serverSocket.accept();
-                    System.out.println("Player Connected from " + playerConnection.getInetAddress() + ":" + playerConnection.getPort() + ".\r\n");
 
-                    Player playerConnected = new Player(playerConnection, playerNumber);
-                    welcomeMessage(playerConnected);
+            try {
+                System.out.println("Waiting...\n");
+                Socket playerConnection = serverSocket.accept();
+                System.out.println("Player Connected from " + playerConnection.getInetAddress() + " at port " + serverSocket.getLocalPort() + ".\r\n");
+                Player playerConnected = new Player(playerConnection, playerNumber);
+                totalPlayersList.add(playerConnected);
 
-                    totalPlayersList.add(playerConnected);
-                    playerList.add(playerConnected);
-                    playerNumber++;
+                selectGame.submit(new ServerHelper(playerConnected, lobby, this));
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
+                playerNumber++;
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            System.out.println("Lobby " + lobbyNumber + " started.");
 
-            lobby.submit(new GameHandler(playerList, this, lobbyNumber));
-            lobbyNumber++;
 
-            playerList.clear();
         }
     }
 
@@ -77,8 +78,12 @@ public class GameServer {
      *
      * @return list of players
      */
-    List<Player> getPlayerList() {
-        return playerList;
+    List<Player> getSuecaPlayerList() {
+        return suecaPlayerList;
+    }
+
+    public List<Player> getSalemaPlayerList() {
+        return salemaPlayerList;
     }
 
     /**
@@ -87,7 +92,20 @@ public class GameServer {
      * @param player player to see the welcome message
      */
 
-    private void welcomeMessage(Player player) {
+    private void welcomeMessageSalema(Player player){
+        String salemaGame = "  _________      .__                            ________                       \n" +
+                " /   _____/____  |  |   ____   _____ _____     /  _____/_____    _____   ____  \n" +
+                " \\_____  \\\\__  \\ |  | _/ __ \\ /     \\\\__  \\   /   \\  ___\\__  \\  /     \\_/ __ \\ \n" +
+                " /        \\/ __ \\|  |_\\  ___/|  Y Y  \\/ __ \\_ \\    \\_\\  \\/ __ \\|  Y Y  \\  ___/ \n" +
+                "/_______  (____  /____/\\___  >__|_|  (____  /  \\______  (____  /__|_|  /\\___  >\n" +
+                "        \\/     \\/          \\/      \\/     \\/          \\/     \\/      \\/     \\/ ";
+
+
+        player.send(salemaGame);
+        player.send("Welcome " + player.getName() + "! Waiting for players...");
+    }
+
+    private void welcomeSuecaMessage(Player player) {
         String suecaGame = "  _________                               ________                       \n" +
                 " /   _____/__ __   ____   ____ _____     /  _____/_____    _____   ____  \n" +
                 " \\_____  \\|  |  \\_/ __ \\_/ ___\\\\__  \\   /   \\  ___\\__  \\  /     \\_/ __ \\ \n" +
@@ -98,5 +116,76 @@ public class GameServer {
         player.send(suecaGame);
         player.send("Welcome " + player.getName() + "! Waiting for players...");
 
+    }
+
+    private class ServerHelper implements Runnable {
+        private final ExecutorService lobby;
+        private final GameServer server;
+        private Player connectedPlayer;
+
+        public ServerHelper(Player connectedPlayer, ExecutorService lobby, GameServer gameServer) {
+            this.connectedPlayer = connectedPlayer;
+            this.lobby = lobby;
+            this.server = gameServer;
+        }
+
+        @Override
+        public void run() {
+            connectedPlayer.send("Which game you want to play? ");
+            connectedPlayer.send("type </sueca> for sueca or </salema> for salema");
+
+            String chosenGame = null;
+            try {
+                chosenGame = connectedPlayer.readFromClient();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (chosenGame.toUpperCase().equals("/SUECA")) {
+                welcomeSuecaMessage(connectedPlayer);
+
+                synchronized (suecaPlayerList) {
+                    suecaPlayerList.add(connectedPlayer);
+                    System.out.println(suecaPlayerList.size());
+                }
+
+            }
+            if (chosenGame.toUpperCase().equals("/SALEMA")) {
+                welcomeMessageSalema(connectedPlayer);
+                synchronized (salemaPlayerList) {
+                    salemaPlayerList.add(connectedPlayer);
+                    System.out.println(salemaPlayerList.size());
+                }
+            }
+
+            if (suecaPlayerList.size() == Sueca.NUMBER_OF_PLAYERS) {
+
+                synchronized ((Integer) lobbyNumber) {
+                    lobbyNumber++;
+                }
+
+                System.out.println("Lobby " + lobbyNumber + " started.");
+                synchronized (lobby) {
+                    lobby.submit(new GameHandler(suecaPlayerList, server, lobbyNumber, GameType.SUECA));
+                }
+
+
+                suecaPlayerList = new ArrayList<>();
+            }
+
+
+            if (salemaPlayerList.size() == Salema.NUMBER_OF_PLAYERS) {
+                synchronized ((Integer) lobbyNumber) {
+                    lobbyNumber++;
+                }
+                System.out.println("Lobby " + lobbyNumber + " started.");
+
+                synchronized (lobby) {
+                    lobby.submit(new GameHandler(salemaPlayerList, server, lobbyNumber, GameType.SALEMA));
+                }
+
+                salemaPlayerList = new ArrayList<>();
+            }
+        }
     }
 }

@@ -68,6 +68,12 @@ public class Sueca implements Game {
 
                 playedCard = getMove(players.get(currentPlayer), players);
 
+                if(playedCard == null){
+                    players.get(currentPlayer).getClientSocket().close();
+                    players.remove(players.get(currentPlayer));
+                    return;
+                }
+
                 if (checkIfPlayerLeft(players)) {
                     playerLeft = true;
                     try {
@@ -77,6 +83,7 @@ public class Sueca implements Game {
                     }
                     return;
                 }
+
 
                 if (cardsInPlay.isEmpty()) {
 
@@ -348,8 +355,7 @@ public class Sueca implements Game {
             String moveString = null;
             try {
                 moveString = currentPlayer.readFromClient();
-
-            } catch (SocketException e) {
+            } catch (IOException e) {
                 System.err.println("Player has left\n");
             }
 
@@ -427,14 +433,6 @@ public class Sueca implements Game {
         }
         return points;
 
-    }
-
-    /**
-     * @see Game#getScore()
-     */
-    @Override
-    public int getScore() {
-        throw new UnsupportedOperationException();
     }
 
     /**

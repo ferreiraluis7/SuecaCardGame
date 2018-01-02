@@ -1,8 +1,6 @@
 package org.academiadecodigo.bootcamp.server;
 
-import org.academiadecodigo.bootcamp.server.game.CardDealer;
-import org.academiadecodigo.bootcamp.server.game.Game;
-import org.academiadecodigo.bootcamp.server.game.Sueca;
+import org.academiadecodigo.bootcamp.server.game.*;
 import org.academiadecodigo.bootcamp.server.player.Player;
 
 import java.util.ArrayList;
@@ -13,13 +11,21 @@ public class GameHandler implements Runnable {
     private Game game;
     private GameServer server;
     private int lobbyNumber;
+    private GameType gameType;
 
-    GameHandler(List<Player> playersForLobby, GameServer server, int lobbyNumber) {
+    GameHandler(List<Player> playersForLobby, GameServer server, int lobbyNumber, GameType gameType) {
+        this.gameType = gameType;
         this.playersInLobby = new ArrayList<>();
         this.playersInLobby.addAll(playersForLobby);
-        this.game = new Sueca();
         this.server = server;
         this.lobbyNumber = lobbyNumber;
+
+        if (gameType.equals(GameType.SUECA)){
+            game = new Sueca();
+        }
+        if (gameType.equals(GameType.SALEMA)){
+            game = new Salema();
+        }
     }
 
     /**
@@ -31,20 +37,18 @@ public class GameHandler implements Runnable {
 
         while (true) { // delete if game doesn't ends after a number of wins
 
-            if (game.isPlayerLeft() && server.getPlayerList().isEmpty()) { //IF NO PLAYERS WAITING STOP
+            if (game.isPlayerLeft() && server.getSuecaPlayerList().isEmpty()) { //IF NO PLAYERS WAITING STOP
                 sendAll("No more players available... To play again, type </newGame>");
                 return;
 
-            } else if (game.isPlayerLeft() && (!server.getPlayerList().isEmpty())) { //IF THERE ARE PLAYERS WAITING
+            } else if (game.isPlayerLeft() && (!server.getSuecaPlayerList().isEmpty())) { //IF THERE ARE PLAYERS WAITING
 
                 try {
                     sendAll("Getting a new player...");
                     Thread.sleep(3000); //PARA ENGANAR E FINGIR QUE ESTA A FAZER MILHOES DE PROCESSOS COMPLICADOS
                     sendAll("\033[H\033[2J"); // CLEAR SCREEN
 
-                    playersInLobby.add(server.getPlayerList().get(0)); //ADD THE WAITING PLAYER TO THIS LIST
-                    server.getPlayerList().get(0).send("Joined " + Thread.currentThread().getName());
-                    server.getPlayerList().remove(server.getPlayerList().get(0)); //REMOVE FROM WAITING LIST
+                    manageGameLists();
 
                     if (playersInLobby.size() != 4) { //IF LIST IS NOT FULL YET, CONTINUE TO PICK MORE PLAYERS
                         continue;
@@ -54,7 +58,7 @@ public class GameHandler implements Runnable {
                     sendAll("Starting a new game with a new player.");
                     Thread.sleep(3000); //PARA ENGANAR E FINGIR QUE ESTA A FAZER MILHOES DE PROCESSOS COMPLICADOS
                     sendAll("\033[H\033[2J"); // CLEAR SCREEN
-                    game = new Sueca();
+                    newGame();
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -64,6 +68,28 @@ public class GameHandler implements Runnable {
             System.out.println(Thread.currentThread().getName() + " is running.\r\n");
             game.setDealer(new CardDealer());
             game.playGame(playersInLobby);
+        }
+    }
+
+    private void manageGameLists() {
+        if (gameType.equals(GameType.SUECA)) {
+            playersInLobby.add(server.getSuecaPlayerList().get(0)); //ADD THE WAITING PLAYER TO THIS LIST
+            server.getSuecaPlayerList().get(0).send("Joined " + Thread.currentThread().getName());
+            server.getSuecaPlayerList().remove(server.getSuecaPlayerList().get(0)); //REMOVE FROM WAITING LIST
+        }
+        if (gameType.equals(GameType.SALEMA)) {
+            playersInLobby.add(server.getSalemaPlayerList().get(0)); //ADD THE WAITING PLAYER TO THIS LIST
+            server.getSalemaPlayerList().get(0).send("Joined " + Thread.currentThread().getName());
+            server.getSalemaPlayerList().remove(server.getSalemaPlayerList().get(0)); //REMOVE FROM WAITING LIST
+        }
+    }
+
+    private void newGame() {
+        if (gameType.equals(GameType.SUECA)){
+            game = new Sueca();
+        }
+        if (gameType.equals(GameType.SALEMA)){
+            game = new Salema();
         }
     }
 
@@ -77,4 +103,6 @@ public class GameHandler implements Runnable {
             p.send(message);
         }
     }
+
+
 }

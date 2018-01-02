@@ -25,7 +25,7 @@ public class ClientHelper implements Runnable, Playable {
 
     /**
      * @see Runnable#run()
-     *
+     * <p>
      * Sends information to server
      */
     @Override
@@ -54,15 +54,26 @@ public class ClientHelper implements Runnable, Playable {
             while (parsedInt < 0 || parsedInt >= CARDSINHAND - cardsPlayed || !wronglyEnteredString.isEmpty()) {
 
                 message = sc.nextLine();
-                if (message.toUpperCase().equals("/NEWGAME")) {
+                if (message.toUpperCase().equals("/NEWGAME") && !client.isPlayingGame()) {
+                    client.setPlayingGame(false);
                     client.newGame();
                 }
 
-                if (!client.isPlayerTurn()) {
+                if (!client.isPlayerTurn() && (message.toUpperCase().equals("/SUECA") || message.toUpperCase().equals("/SALEMA")) && !client.isPlayingGame()) {
+                    play(message.toUpperCase());
+                   continue;
+                }
+
+                if (!client.isPlayerTurn() && client.isPlayingGame()) {
                     client.renderToScreen("It's not your turn...");
+
                     continue;
                 }
 
+                if (!client.isPlayerTurn()){
+                    client.renderToScreen("Wrong command. ");
+                    continue;
+                }
                 try {
                     parsedInt = Integer.parseInt(message);
                 } catch (NumberFormatException e) {
