@@ -1,13 +1,10 @@
 package org.academiadecodigo.bootcamp.server.player;
 
-import org.academiadecodigo.bootcamp.server.GameServer;
 import org.academiadecodigo.bootcamp.server.game.Cards;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +20,8 @@ public class Player {
     public Player(Socket playerConnection, int nameSuffix) {
         this.clientSocket = playerConnection;
         try {
-            this.output = new PrintWriter(clientSocket.getOutputStream(), true);
+            this.output = new PrintWriter(new OutputStreamWriter(
+                    clientSocket.getOutputStream(), StandardCharsets.UTF_8), true);
             this.input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,7 +92,7 @@ public class Player {
      * @param string message to be sent
      */
     public void send(String string) {
-        System.out.println(name + " sent a message to corresponding client at " + clientSocket.getInetAddress() + ".\r\n");
+        System.out.println( "Sent a message to " + name + " at " + clientSocket.getInetAddress() + ":" + clientSocket.getPort() + ".\r\n");
         output.println(string);
         output.flush();
     }
@@ -107,7 +105,7 @@ public class Player {
      * @throws IOException
      */
     public String readFromClient() throws IOException {
-        System.out.println(name + " received a message from corresponding client at " + clientSocket.getInetAddress() + ".\r\n");
+        System.out.println("Received a message from " + name + " at " + clientSocket.getInetAddress() + ":" + clientSocket.getPort() + ".\r\n");
         return input.readLine();
     }
 

@@ -55,7 +55,7 @@ public class Client {
         outThread.execute(new ClientHelper(clientSocket, this));
         try {
 
-            input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
             String whenToPlay = "It is your turn,";
 
             while (true) {

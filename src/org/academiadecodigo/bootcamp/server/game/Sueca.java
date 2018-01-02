@@ -355,7 +355,7 @@ public class Sueca implements Game {
 
             if (moveString == null) {
                 for (Player p : players) {
-                    System.out.println(currentPlayer.getName() + " has left\n");
+                    System.out.println(currentPlayer.getName() + "<" + currentPlayer.getClientSocket().getInetAddress() + ":" + currentPlayer.getClientSocket().getPort() + "> has left\n");
                     p.send("PLAYERQUIT@@" + currentPlayer.getName() + " has left the game");//"PLAYERQUIT" is a reference so client can read and print
                     playerLeft = true;
                 }
@@ -373,7 +373,7 @@ public class Sueca implements Game {
 
                 Cards card = currentPlayer.getHand().get(cardIndex);
 
-                System.out.println(currentPlayer.getName() + " played " + card.getCompleteName() + ".\n");
+                //System.out.println(currentPlayer.getName() + " played " + card.getCompleteName() + ".\n");
 
                 return card;
 
