@@ -14,8 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Client {
-    private final static int PORT = 8081;
-    private static String HOST = "localhost";
+    private final static int PORT = 8080;
+    private static String HOST = "sueca.ddns.net";
 
     private boolean playerTurn = false;
     private Socket clientSocket = null;
