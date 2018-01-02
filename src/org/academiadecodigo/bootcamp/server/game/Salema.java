@@ -73,6 +73,12 @@ public class Salema implements Game {
 
                 playedCard = getMove(players.get(currentPlayer), players);
 
+                if(playedCard == null){
+                    players.get(currentPlayer).getClientSocket().close();
+                    players.remove(players.get(currentPlayer));
+                    return;
+                }
+
                 if (checkIfPlayerLeft(players)) {
                     playerLeft = true;
                     try {

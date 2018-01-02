@@ -39,9 +39,6 @@ public interface Game {
     int getPoints(List<Cards> cardsPlayed, Player winningPlayer, List<Player> players);
 
     /**
-
-
-    /**
      * Sets the game dealer
      *
      * @param dealer the game dealer
