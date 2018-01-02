@@ -92,7 +92,20 @@ public class GameServer {
      * @param player player to see the welcome message
      */
 
-    private void welcomeMessage(Player player) {
+    private void welcomeMessageSalema(Player player){
+        String salemaGame = "  _________      .__                            ________                       \n" +
+                " /   _____/____  |  |   ____   _____ _____     /  _____/_____    _____   ____  \n" +
+                " \\_____  \\\\__  \\ |  | _/ __ \\ /     \\\\__  \\   /   \\  ___\\__  \\  /     \\_/ __ \\ \n" +
+                " /        \\/ __ \\|  |_\\  ___/|  Y Y  \\/ __ \\_ \\    \\_\\  \\/ __ \\|  Y Y  \\  ___/ \n" +
+                "/_______  (____  /____/\\___  >__|_|  (____  /  \\______  (____  /__|_|  /\\___  >\n" +
+                "        \\/     \\/          \\/      \\/     \\/          \\/     \\/      \\/     \\/ ";
+
+
+        player.send(salemaGame);
+        player.send("Welcome " + player.getName() + "! Waiting for players...");
+    }
+
+    private void welcomeSuecaMessage(Player player) {
         String suecaGame = "  _________                               ________                       \n" +
                 " /   _____/__ __   ____   ____ _____     /  _____/_____    _____   ____  \n" +
                 " \\_____  \\|  |  \\_/ __ \\_/ ___\\\\__  \\   /   \\  ___\\__  \\  /     \\_/ __ \\ \n" +
@@ -129,7 +142,7 @@ public class GameServer {
             }
 
             if (chosenGame.toUpperCase().equals("/SUECA")) {
-                welcomeMessage(connectedPlayer);
+                welcomeSuecaMessage(connectedPlayer);
 
                 synchronized (suecaPlayerList) {
                     suecaPlayerList.add(connectedPlayer);
@@ -138,7 +151,7 @@ public class GameServer {
 
             }
             if (chosenGame.toUpperCase().equals("/SALEMA")) {
-                welcomeMessage(connectedPlayer);
+                welcomeMessageSalema(connectedPlayer);
                 synchronized (salemaPlayerList) {
                     salemaPlayerList.add(connectedPlayer);
                     System.out.println(salemaPlayerList.size());

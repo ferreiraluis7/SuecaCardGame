@@ -11,7 +11,7 @@ import java.util.List;
 public class Salema implements Game {
 
     public static final int TOTAL_POINTS = 20;
-    private static final int END_GAME_POINTS = 100;
+    private static final int END_GAME_POINTS = 11;
     public static final int NUMBER_OF_PLAYERS = 4;
     public static final int CARDS_PER_PLAYER = 10;
     public static final CardDealer.DeckType DECK_TYPE = CardDealer.DeckType.REGIONAL;
@@ -149,6 +149,8 @@ public class Salema implements Game {
 
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
             currentPlayer++;
@@ -168,10 +170,10 @@ public class Salema implements Game {
 
 
     private void updateScoreInfo(List<Player> players,int p1Points,int p2Points,int p3Points ,int p4Points) {
-        dealer.broadcastMessage(players, "Global Score - Player 1: " + p1GlobalScore + "Player 2: " + p2GlobalScore +
-                "Player 3: " + p3GlobalScore +"Player 4: " + p4GlobalScore + "\n");
-        dealer.broadcastMessage(players, "Points made this game - Player 1: " + p1Points + "Player 2: " + p2Points +
-                "Player 3: " + p3Points +"Player 4: " + p4Points + "\n");
+        dealer.broadcastMessage(players, "GLOBAL SCORE - Player 1: " + p1GlobalScore + " Player 2: " + p2GlobalScore +
+                " Player 3: " + p3GlobalScore +" Player 4: " + p4GlobalScore + "\n");
+        dealer.broadcastMessage(players, "Points made this game - Player 1: " + p1Points + " Player 2: " + p2Points +
+                " Player 3: " + p3Points +" Player 4: " + p4Points + "\n");
     }
 
 
@@ -212,7 +214,7 @@ public class Salema implements Game {
     }
 
 
-    private boolean checkGameEnd(List<Player> players,int p1Points, int p2Points, int p3Points, int p4Points, int totalCardsPlayed) {
+    private boolean checkGameEnd(List<Player> players,int p1Points, int p2Points, int p3Points, int p4Points, int totalCardsPlayed) throws InterruptedException {
         if (totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER) {
             System.out.println("Game ended\n");
             dealer.broadcastMessage(players, "\n\n GAME HAS ENDED \n");
@@ -220,10 +222,33 @@ public class Salema implements Game {
             setGameScore(players, p1Points, p2Points, p3Points, p4Points);
 
             dealer.broadcastMessage(players, "\n GLOBAL SCORE:");
-            dealer.broadcastMessage(players, "Global Score - Player 1: " + p1GlobalScore + "Player 2: " + p2GlobalScore +
-                    "Player 3: " + p3GlobalScore +"Player 4: " + p4GlobalScore + "\n");
+            dealer.broadcastMessage(players, "Global Score - Player 1: " + p1GlobalScore + " Player 2: " + p2GlobalScore +
+                    " Player 3: " + p3GlobalScore +" Player 4: " + p4GlobalScore + "\n");
 
             startingPlayer++;
+
+            if (p1GlobalScore >= END_GAME_POINTS){
+                dealer.broadcastMessage(players,"\n\n SET ENDED \n");
+                dealer.broadcastMessage(players, (players.get(0).getName() + "has lost the game \n\n"));
+                resetSet();
+                Thread.sleep(3000);
+            }else if (p2GlobalScore >= END_GAME_POINTS){
+                dealer.broadcastMessage(players,"\n\n SET ENDED \n");
+                dealer.broadcastMessage(players, (players.get(1).getName() + "has lost the game\n\n"));
+                  resetSet();
+                Thread.sleep(3000);
+            }else if( p3GlobalScore >= END_GAME_POINTS){
+                dealer.broadcastMessage(players,"\n\n SET ENDED \n");
+                dealer.broadcastMessage(players, (players.get(2).getName() + "has lost the game\n\n"));
+                resetSet();
+                Thread.sleep(3000);
+            } else if (p4GlobalScore >= END_GAME_POINTS ){
+                    dealer.broadcastMessage(players,"\n\n SET ENDED \n");
+                    dealer.broadcastMessage(players, (players.get(3).getName() + "has lost the game\n\n"));
+                    resetSet();
+                Thread.sleep(3000);
+            }
+
             if (startingPlayer >= NUMBER_OF_PLAYERS) {
                 startingPlayer = 0;
             }
@@ -235,6 +260,12 @@ public class Salema implements Game {
         return true;
     }
 
+    private void resetSet() {
+        p1GlobalScore = 0;
+        p2GlobalScore = 0;
+        p3GlobalScore = 0;
+        p4GlobalScore = 0;
+    }
 
 
     private void setGameScore(List<Player> players,int p1Points, int p2Points, int p3Points, int p4Points) {

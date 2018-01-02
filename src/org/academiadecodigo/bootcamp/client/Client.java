@@ -16,10 +16,12 @@ import java.util.concurrent.Executors;
 public class Client {
     private final static int PORT = 8080;
     private static String HOST = "localhost";
+
     private boolean playerTurn = false;
     private Socket clientSocket = null;
     private BufferedReader input = null;
     private PrintWriter output = null;
+    private boolean playingGame;
 
 
 
@@ -45,11 +47,11 @@ public class Client {
         TinySound.init();
         Sound sound = TinySound.loadSound("SE/turn.wav");
         Music music = TinySound.loadMusic("BGM/waiting.wav");
-        music.play(true);
         //If can't connect to server, leave.
         if (!connectServer()) {
             return;
         }
+        music.play(true);
         ExecutorService outThread = Executors.newSingleThreadExecutor();
         outThread.execute(new ClientHelper(clientSocket, this));
         try {
@@ -91,7 +93,8 @@ public class Client {
             System.exit(1);
         }
 
-        if (readLine.contains("VICTORIES")) {
+        if (readLine.contains("VICTORIES") || readLine.contains("GLOBAL SCORE")) {
+            playingGame = true;
             music.stop();
             clearScreen();
             renderToScreen(readLine);
@@ -113,6 +116,7 @@ public class Client {
                 renderToScreen(readLineSplit[1]); //SOUT GAME HAND
             }
         } else if (readLine.contains("PLAYERQUIT")) {
+            playingGame = false;
             String[] readLineSplit = readLine.split("@@");
             renderToScreen(readLineSplit[1]);
             renderToScreen(input.readLine());
@@ -167,6 +171,15 @@ public class Client {
      */
     void setPlayerTurn(boolean playerTurn) {
         this.playerTurn = playerTurn;
+    }
+
+
+    void setPlayingGame(boolean playingGame) {
+        this.playingGame = playingGame;
+    }
+
+    boolean isPlayingGame() {
+        return playingGame;
     }
 }
 
