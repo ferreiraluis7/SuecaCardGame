@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class GameServer {
-    private final int PORT = 8080;
+    private final int PORT = 8081;
     private ServerSocket serverSocket;
     private List<Player> totalPlayersList;
     private List<Player> suecaPlayerList;
@@ -131,6 +131,14 @@ public class GameServer {
 
         @Override
         public void run() {
+            connectedPlayer.send("Type your username:");
+            try {
+                connectedPlayer.setName(connectedPlayer.readFromClient());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
             connectedPlayer.send("Which game you want to play? ");
             connectedPlayer.send("type </sueca> for sueca or </salema> for salema");
 

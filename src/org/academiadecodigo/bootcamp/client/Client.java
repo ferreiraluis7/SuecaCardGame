@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Client {
-    private final static int PORT = 8080;
+    private final static int PORT = 8081;
     private static String HOST = "localhost";
 
     private boolean playerTurn = false;
@@ -22,6 +22,8 @@ public class Client {
     private BufferedReader input = null;
     private PrintWriter output = null;
     private boolean playingGame;
+    private boolean setName;
+
 
 
 
@@ -184,6 +186,14 @@ public class Client {
 
     boolean isPlayingGame() {
         return playingGame;
+    }
+
+    public void setSetName(boolean setName) {
+        this.setName = setName;
+    }
+
+    public boolean isSetName() {
+        return setName;
     }
 }
 

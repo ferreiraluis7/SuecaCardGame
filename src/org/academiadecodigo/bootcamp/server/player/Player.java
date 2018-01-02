@@ -26,7 +26,7 @@ public class Player {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.name = "Player " + nameSuffix;
+        this.name = "" + nameSuffix;
 
     }
 
@@ -116,6 +116,10 @@ public class Player {
      */
     public void setTeam(int team) {
         this.team = team;
+    }
+
+    public void setName(String name) {
+        this.name = name + "#" + this.name;
     }
 }
 
