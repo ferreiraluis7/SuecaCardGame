@@ -100,7 +100,7 @@ public class Salema implements Game {
                     higherCard = playedCard;
                     winningPlayer = players.get(currentPlayer);
 
-                    currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard.getUnicode() + "\r\n";
+                    currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "\r\n";
 
                     currentSuit = playedCard.getSuit();
                     totalCardsPlayed++;
@@ -125,7 +125,7 @@ public class Salema implements Game {
                     winningPlayer = players.get(currentPlayer);
                     higherCard = tempCard;
                 }
-                currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard.getUnicode() + "\n"; //add players and card to the string
+                currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "\n"; //add players and card to the string
                 totalCardsPlayed++;
 
                 updateGameInfo(players, p1Points , p2Points , p3Points , p4Points , currentGameHand);
