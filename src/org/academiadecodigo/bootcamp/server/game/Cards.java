@@ -120,26 +120,6 @@ public enum Cards {
         return encodedCards;
     }
 
-    public static List<Cards> decode(String encodedCards){
-
-        //needs to throw an exception in case we give a string that does not contain cads name
-
-        String[] cardString = encodedCards.split("//");
-
-        List<Cards> cards = new ArrayList<>();
-
-        for (int i = 0; i < cardString.length ; i++) {
-
-            for(Cards c : Cards.values()){
-
-                if (c.name().equals(cardString[i])){
-                    cards.add(c);
-                }
-            }
-        }
-        return cards;
-    }
-
     public enum Rank {
         TWO(0, 0),
         THREE(1, 0),

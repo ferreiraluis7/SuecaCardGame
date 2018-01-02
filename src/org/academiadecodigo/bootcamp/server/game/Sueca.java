@@ -430,14 +430,6 @@ public class Sueca implements Game {
     }
 
     /**
-     * @see Game#getScore()
-     */
-    @Override
-    public int getScore() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * @see Game#setDealer(CardDealer)
      */
     @Override
