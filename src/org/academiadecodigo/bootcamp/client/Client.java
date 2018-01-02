@@ -1,5 +1,8 @@
 package org.academiadecodigo.bootcamp.client;
 
+import org.academiadecodigo.bootcamp.kuusisto.tinysound.Music;
+import org.academiadecodigo.bootcamp.kuusisto.tinysound.Sound;
+import org.academiadecodigo.bootcamp.kuusisto.tinysound.TinySound;
 import org.academiadecodigo.bootcamp.server.game.Cards;
 
 import java.io.BufferedReader;
@@ -17,6 +20,9 @@ public class Client {
     private Socket clientSocket = null;
     private BufferedReader input = null;
     private PrintWriter output = null;
+    private Music music;
+    private Sound sound;
+
 
     public static void main(String[] args) {
         if (args.length == 1) {
@@ -37,23 +43,28 @@ public class Client {
      * Listens for server communications
      */
     private void start() {
+        TinySound.init();
+        sound = TinySound.loadSound("SE/turn.wav");
+        music = TinySound.loadMusic("BGM/waiting.wav");
+        music.play(true);
         //If can't connect to server, leave.
         if (!connectServer()) {
             return;
         }
-
         ExecutorService outThread = Executors.newSingleThreadExecutor();
         outThread.execute(new ClientHelper(clientSocket, this));
         try {
+
             input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String whenToPlay = "It is your turn,";
 
             while (true) {
-
                 String readLine = input.readLine();
                 decodeReceivedString(readLine);
                 if (readLine.contains(whenToPlay)) {
+                    music.stop();
                     playerTurn = true;
+                    sound.play();
                 }
             }
         } catch (IOException e) {
@@ -82,6 +93,7 @@ public class Client {
         }
 
         if (readLine.contains("VICTORIES")) {
+            music.stop();
             clearScreen();
             renderToScreen(readLine);
             return;
