@@ -8,9 +8,10 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Sueca implements Game {
+public class Salema implements Game {
 
-    public static final int TOTAL_POINTS = 120;
+    public static final int TOTAL_POINTS = 20;
+    private static final int END_GAME_POINTS = 100;
     public static final int NUMBER_OF_PLAYERS = 4;
     public static final int CARDS_PER_PLAYER = 10;
     public static final CardDealer.DeckType DECK_TYPE = CardDealer.DeckType.REGIONAL;
@@ -19,6 +20,10 @@ public class Sueca implements Game {
     private CardDealer dealer;
     private int startingPlayer = 0;
     private boolean playerLeft;
+    private int p1GlobalScore = 0;
+    private int p2GlobalScore = 0;
+    private int p3GlobalScore = 0;
+     private int p4GlobalScore = 0;
 
     /**
      * Starts the game loop
@@ -35,8 +40,11 @@ public class Sueca implements Game {
         Cards higherCard = null;
         Cards tempCard;
         Player winningPlayer = null;
-        int scoreTeamOne = 0;
-        int scoreTeamTwo = 0;
+        int p1Points = 0;
+        int p2Points = 0;
+        int p3Points = 0;
+        int p4Points = 0;
+
         String currentGameHand = "";
         boolean isGameStarted = false;
         //the player that starts the first game of a lobby is always the first to
@@ -46,13 +54,10 @@ public class Sueca implements Game {
 
         if (!isGameStarted) {
             //Set card hand for each player
-            updateScoreInfo(players, scoreTeamOne, scoreTeamTwo);
+            updateScoreInfo( players , p1Points , p2Points , p3Points , p4Points );
             prepareGame(players);
-            //choose the trumpSuit
-            trumpSuit = randomizeTrumpSuit();
-            currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\r\nGAME HAND:\r\n";
+            currentGameHand = "\r\nGAME HAND:\r\n";
             informPlayerPartner(players);
-            dealer.broadcastMessage(players, generateTrumpSuitMessage(trumpSuit));
             isGameStarted = true;
 
         }
@@ -64,7 +69,7 @@ public class Sueca implements Game {
             }
 
             try {
-                isGameStarted = checkGameEnd(players, totalCardsPlayed, scoreTeamOne);
+                isGameStarted = checkGameEnd(players, p1Points, p2Points, p3Points, p4Points, totalCardsPlayed);
 
                 playedCard = getMove(players.get(currentPlayer), players);
 
@@ -80,6 +85,11 @@ public class Sueca implements Game {
 
                 if (cardsInPlay.isEmpty()) {
 
+                    if (playedCard.equals(Cards.QUEEN_OF_SPADES)){
+                        players.get(currentPlayer).send("You are not allowed to play that card on the first move, please play another");  //INNER CLASS W/ MESSAGES BUILDER METHODS
+                        continue;
+                    }
+
                     confirmPlay(players, currentPlayer, cardsInPlay, playedCard);
 
                     higherCard = playedCard;
@@ -91,9 +101,10 @@ public class Sueca implements Game {
                     totalCardsPlayed++;
                     currentPlayer++;
 
-                    updateGameInfo(players, scoreTeamOne, scoreTeamTwo, currentGameHand);
+                    updateGameInfo(players , p1Points , p2Points , p3Points , p4Points , currentGameHand);
                     continue;
                 }
+
 
 
                 if (checkMove(players.get(currentPlayer), playedCard, currentSuit)) {
@@ -112,20 +123,26 @@ public class Sueca implements Game {
                 currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard.getUnicode() + "\n"; //add players and card to the string
                 totalCardsPlayed++;
 
-                updateGameInfo(players, scoreTeamOne, scoreTeamTwo, currentGameHand);
+                updateGameInfo(players, p1Points , p2Points , p3Points , p4Points , currentGameHand);
 
                 if (cardsInPlay.size() == NUMBER_OF_PLAYERS) {
                     dealer.broadcastMessage(players, winningPlayer.getName() + " WINS THIS ROUND AND MAKES " + getPoints(cardsInPlay, winningPlayer, players) + " POINTS \n");
 
                     if (winningPlayer.getTeam() == 1) {
-                        scoreTeamOne += getPoints(cardsInPlay, winningPlayer, players);
+                        p1Points += getPoints(cardsInPlay, winningPlayer, players);
                     }
                     if (winningPlayer.getTeam() == 2) {
-                        scoreTeamTwo += getPoints(cardsInPlay, winningPlayer, players);
+                        p2Points += getPoints(cardsInPlay, winningPlayer, players);
+                    }
+                    if (winningPlayer.getTeam() == 3) {
+                        p3Points += getPoints(cardsInPlay, winningPlayer, players);
+                    }
+                    if (winningPlayer.getTeam() == 4) {
+                        p4Points += getPoints(cardsInPlay, winningPlayer, players);
                     }
 
                     currentPlayer = players.indexOf(winningPlayer);
-                    currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\r\nGAME HAND:\r\n"; //reset String to default
+                    currentGameHand = "\r\nGAME HAND:\r\n"; //reset String to default
                     cardsInPlay.clear();
                     continue;
                 }
@@ -140,46 +157,24 @@ public class Sueca implements Game {
 
     }
 
-    /**
-     * Updates the game information
-     *
-     * @param players in game players
-     *
-     * @param scoreTeamOne team one score
-     *
-     * @param scoreTeamTwo team two score
-     *
-     * @param currentGameHand current game hand
-     */
-    private void updateGameInfo(List<Player> players, int scoreTeamOne, int scoreTeamTwo, String currentGameHand) {
-        updateScoreInfo(players, scoreTeamOne, scoreTeamTwo);
+
+
+
+
+    private void updateGameInfo(List<Player> players, int p1Points, int p2points, int p3Points, int p4Points, String currentGameHand) {
+        updateScoreInfo(players, p1Points, p2points, p3Points,p4Points);
         dealer.sendAll(players, currentGameHand);
     }
 
-    /**
-     * Updates the score information
-     *
-     * @param players in game players
-     *
-     * @param scoreTeamOne team one score
-     *
-     * @param scoreTeamTwo team two score
-     */
-    private void updateScoreInfo(List<Player> players, int scoreTeamOne, int scoreTeamTwo) {
-        dealer.broadcastMessage(players, "VICTORIES - TEAM 1: " + teamOneVictories + " TEAM 2: " + teamTwoVictories);
-        dealer.broadcastMessage(players, "SCORE - TEAM 1: " + scoreTeamOne + " TEAM 2: " + scoreTeamTwo + "\n");
+
+    private void updateScoreInfo(List<Player> players,int p1Points,int p2Points,int p3Points ,int p4Points) {
+        dealer.broadcastMessage(players, "Global Score - Player 1: " + p1GlobalScore + "Player 2: " + p2GlobalScore +
+                "Player 3: " + p3GlobalScore +"Player 4: " + p4GlobalScore + "\n");
+        dealer.broadcastMessage(players, "Points made this game - Player 1: " + p1Points + "Player 2: " + p2Points +
+                "Player 3: " + p3Points +"Player 4: " + p4Points + "\n");
     }
 
-    /**
-     * Generates the trump suit message
-     *
-     * @param trumpSuit trump suit
-     *
-     * @return trump suit message
-     */
-    private String generateTrumpSuitMessage(Cards.Suit trumpSuit) {
-        return "\r\nTRUMP: " + trumpSuit + "\r\n";
-    }
+
 
     /**
      * Adds the played card to table and removes it from player hand
@@ -194,31 +189,18 @@ public class Sueca implements Game {
         players.get(currentPlayer).removeCard(playedCard);
     }
 
-    /**
-     * Informs who is each player teammate
-     *
-     * @param players players in game
-     */
-
     private void informPlayerPartner(List<Player> players) {
         players.get(0).setTeam(1);
         players.get(1).setTeam(2);
-        players.get(2).setTeam(1);
-        players.get(3).setTeam(2);
-        players.get(0).send("\nYou're in Team " + players.get(0).getTeam() + ". Your team mate is " + players.get(2).getName());
-        players.get(1).send("\nYou're in Team " + players.get(1).getTeam() + ". Your team mate is " + players.get(3).getName());
-        players.get(2).send("\nYou're in Team " + players.get(2).getTeam() + ". Your team mate is " + players.get(0).getName());
-        players.get(3).send("\nYou're in Team " + players.get(3).getTeam() + ". Your team mate is " + players.get(1).getName());
+        players.get(2).setTeam(3);
+        players.get(3).setTeam(4);
+        players.get(0).send("\nYou're Player number: " + players.get(0).getTeam() );
+        players.get(1).send("\nYou're Player number: " + players.get(1).getTeam() );
+        players.get(2).send("\nYou're Player number: " + players.get(2).getTeam() );
+        players.get(3).send("\nYou're Player number: " + players.get(3).getTeam() );
     }
 
-    /**
-     * Randomly generates the trump suit
-     *
-     * @return the trump suit
-     */
-    private Cards.Suit randomizeTrumpSuit() {
-        return Cards.values()[Randomizer.getRandom(Cards.values().length)].getSuit();
-    }
+
 
     /**
      * Allows each player to have an assigned hand
@@ -229,26 +211,17 @@ public class Sueca implements Game {
         dealer.dealCards(players, CARDS_PER_PLAYER, DECK_TYPE);
     }
 
-    /**
-     * Checks if the game has ended
-     *
-     * @param players players in game
-     *
-     * @param totalCardsPlayed total cards played during game
-     *
-     * @param score game score for team One
-     *
-     * @return true or false if the game has or has not end
-     */
-    private boolean checkGameEnd(List<Player> players, int totalCardsPlayed, int score) {
+
+    private boolean checkGameEnd(List<Player> players,int p1Points, int p2Points, int p3Points, int p4Points, int totalCardsPlayed) {
         if (totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER) {
             System.out.println("Game ended\n");
             dealer.broadcastMessage(players, "\n\n GAME HAS ENDED \n");
 
-            setGameScore(players, score);
+            setGameScore(players, p1Points, p2Points, p3Points, p4Points);
 
             dealer.broadcastMessage(players, "\n GLOBAL SCORE:");
-            dealer.broadcastMessage(players, "TEAM ONE: " + teamOneVictories + " TEAM TWO: " + teamTwoVictories + "\n");
+            dealer.broadcastMessage(players, "Global Score - Player 1: " + p1GlobalScore + "Player 2: " + p2GlobalScore +
+                    "Player 3: " + p3GlobalScore +"Player 4: " + p4GlobalScore + "\n");
 
             startingPlayer++;
             if (startingPlayer >= NUMBER_OF_PLAYERS) {
@@ -262,40 +235,20 @@ public class Sueca implements Game {
         return true;
     }
 
-    /**
-     * Sets the game score according to Sueca game rules
-     *
-     * @param players in game players
-     *
-     * @param score team One score
-     */
 
-    private void setGameScore(List<Player> players, int score) {
-        if (score < TOTAL_POINTS / 2) {
-            teamTwoVictories++;
-            dealer.broadcastMessage(players, "Team Two has won this game With " + (TOTAL_POINTS - score) + " points");
-            if (score == 0){
-                teamTwoVictories+=3;
-                dealer.broadcastMessage(players, "Team Two has scored 120 points, quadruple victory for team Two");
-            }
-            if (score < 30) {
-                teamTwoVictories++;
-                dealer.broadcastMessage(players, "Team Two has scored more than 90 points, double victory for team Two");
-            }
-        } else if (score > TOTAL_POINTS / 2) {
-            teamOneVictories++;
-            dealer.broadcastMessage(players, "Team One has won this game With " + score + " points");
-            if (score == TOTAL_POINTS) {
-                teamOneVictories += 3;
-                dealer.broadcastMessage(players, "Team One has scored 120 points, quadruple victory for team One");
-            }
-            if (score > 90) {
-                teamOneVictories++;
-                dealer.broadcastMessage(players, "Tem One has scored more than 90 points, double victory for team One");
-            }
-        } else {
-            dealer.broadcastMessage(players, "Game tie");
-        }
+
+    private void setGameScore(List<Player> players,int p1Points, int p2Points, int p3Points, int p4Points) {
+
+        p1GlobalScore += p1Points;
+        p2GlobalScore += p2Points;
+        p3GlobalScore += p3Points;
+        p4GlobalScore += p4Points;
+
+        dealer.broadcastMessage(players, "Player 1 made" + p1Points  + " points");
+        dealer.broadcastMessage(players, "Player 2 made" + p2Points  + " points");
+        dealer.broadcastMessage(players, "Player 3 made" + p3Points  + " points");
+        dealer.broadcastMessage(players, "Player 4 made" + p4Points  + " points");
+
     }
 
     /**
@@ -313,13 +266,8 @@ public class Sueca implements Game {
         System.out.println("Entered checkHigherCard");
 
         if (!playedCard.getSuit().equals(higherCard.getSuit())) {
-            if (!playedCard.getSuit().equals(trumpSuit)) {
                 return higherCard;
-            }
-
-            return playedCard;
         }
-
         if (playedCard.getRank().getSuecaRank() > higherCard.getRank().getSuecaRank()) {
             return playedCard;
         }
@@ -415,6 +363,8 @@ public class Sueca implements Game {
     }
 
 
+
+
     /**
      * @see Game#getPoints(List, Player, List)
      */
@@ -423,7 +373,12 @@ public class Sueca implements Game {
 
         int points = 0;
         for (Cards c : cardsPlayed) {
-            points += c.getRank().getSuecaPoints();
+            if (c.getSuit().equals(Cards.Suit.HEARTS)){
+                points += 1;
+            }
+            if (c.equals(Cards.QUEEN_OF_SPADES)){
+                points+= 10;
+            }
         }
         return points;
 

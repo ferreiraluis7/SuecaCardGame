@@ -25,7 +25,7 @@ public class ClientHelper implements Runnable, Playable {
 
     /**
      * @see Runnable#run()
-     *
+     * <p>
      * Sends information to server
      */
     @Override
@@ -56,6 +56,11 @@ public class ClientHelper implements Runnable, Playable {
                 message = sc.nextLine();
                 if (message.toUpperCase().equals("/NEWGAME")) {
                     client.newGame();
+                }
+
+                if (message.toUpperCase().equals("/SUECA") || message.toUpperCase().equals("/SALEMA")) {
+                    play(message.toUpperCase());
+                   continue;
                 }
 
                 if (!client.isPlayerTurn()) {

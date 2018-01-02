@@ -39,11 +39,7 @@ public interface Game {
     int getPoints(List<Cards> cardsPlayed, Player winningPlayer, List<Player> players);
 
     /**
-     * Gets the game score
-     *
-     * @return the index of the next player to play
-     */
-    int getScore();
+
 
     /**
      * Sets the game dealer
