@@ -11,7 +11,7 @@ import java.util.List;
 public class Salema implements Game {
 
     public static final int TOTAL_POINTS = 20;
-    private static final int END_GAME_POINTS = 11;
+    private static final int END_GAME_POINTS = 100;
     public static final int NUMBER_OF_PLAYERS = 4;
     public static final int CARDS_PER_PLAYER = 10;
     public static final CardDealer.DeckType DECK_TYPE = CardDealer.DeckType.REGIONAL;
