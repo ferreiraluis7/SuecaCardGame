@@ -69,6 +69,8 @@ public class Sueca implements Game {
                 playedCard = getMove(players.get(currentPlayer), players);
 
                 if(playedCard == null){
+                    players.get(currentPlayer).getClientSocket().close();
+                    players.remove(players.get(currentPlayer));
                     return;
                 }
 
