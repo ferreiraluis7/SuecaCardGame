@@ -30,8 +30,8 @@ public class Client {
             HOST = args[0];
         }
         if (args.length > 1) {
-            System.out.println("Usage: java -jar SuecaCardGame.jar <server IP ADDRESS> - connects to a specific server\n" +
-                    "java -jar SuecaCardGame.jar - connects to a local host (your machine)");
+            System.out.println("Usage: java -jar SuecaGameClient.jar <server IP ADDRESS> - connects to a specific server\n" +
+                    "java -jar SuecaGameClient.jar - connects to a local host (your machine)");
             System.exit(1);
         }
         Client client = new Client();
@@ -99,6 +99,10 @@ public class Client {
             clearScreen();
             renderToScreen(readLine);
             return;
+        }
+
+        if(readLine.contains("type </newGame>")){
+            playingGame = false;
         }
 
         if (readLine.equals("CHECKCONNECT")) {
