@@ -49,7 +49,6 @@ public class Salema implements Game {
         //the player that starts the first game of a lobby is always the first to
 
         // game init
-        System.out.println("GAME IS ABOUT TO START");
 
         if (!isGameStarted) {
             //Set card hand for each player
@@ -108,7 +107,7 @@ public class Salema implements Game {
 
 
                 if (checkMove(players.get(currentPlayer), playedCard, currentSuit)) {
-                    System.out.println(players.get(currentPlayer).getName() + " tried to cheat");
+                    System.out.println(players.get(currentPlayer).getName() + "<" + players.get(currentPlayer).getClientSocket().getInetAddress() + ":" + players.get(currentPlayer).getClientSocket().getPort() + "> tried to cheat");
                     players.get(currentPlayer).send("You are not allowed to play that card, please play another");  //INNER CLASS W/ MESSAGES BUILDER METHODS
                     continue;
                 }
@@ -294,7 +293,6 @@ public class Salema implements Game {
      * @return higher card
      */
     private Cards checkHigherCard(Cards playedCard, Cards higherCard, Cards.Suit trumpSuit) {
-        System.out.println("Entered checkHigherCard");
 
         if (!playedCard.getSuit().equals(higherCard.getSuit())) {
                 return higherCard;
@@ -329,12 +327,12 @@ public class Salema implements Game {
                 moveString = currentPlayer.readFromClient();
 
             } catch (SocketException e) {
-                System.err.println("Player has left\n");
+                System.err.println(currentPlayer.getName() + "<" + currentPlayer.getClientSocket().getInetAddress() + ":" + currentPlayer.getClientSocket().getPort() + "> left");
             }
 
             if (moveString == null) {
                 for (Player p : players) {
-                    System.out.println(currentPlayer.getName() + " has left\n");
+                    System.out.println(currentPlayer.getName() + "<" + currentPlayer.getClientSocket().getInetAddress() + ":" + currentPlayer.getClientSocket().getPort() + "> left\n");
                     p.send("PLAYERQUIT@@" + currentPlayer.getName() + " has left the game");//"PLAYERQUIT" is a reference so client can read and print
                     playerLeft = true;
                 }
@@ -351,8 +349,6 @@ public class Salema implements Game {
                 }
 
                 Cards card = currentPlayer.getHand().get(cardIndex);
-
-                System.out.println(currentPlayer.getName() + " played " + card.getCompleteName() + ".\n");
 
                 return card;
 

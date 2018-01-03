@@ -99,8 +99,8 @@ public class CardDealer {
         }
 
         sortedHand.addAll(sortCardsByRank(clubsHand));
-        sortedHand.addAll(sortCardsByRank(spadesHand));
         sortedHand.addAll(sortCardsByRank(heartsHand));
+        sortedHand.addAll(sortCardsByRank(spadesHand));
         sortedHand.addAll(sortCardsByRank(diamondsHand));
         return sortedHand;
     }

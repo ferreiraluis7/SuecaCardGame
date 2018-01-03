@@ -104,7 +104,7 @@ public class Sueca implements Game {
 
 
                 if (checkMove(players.get(currentPlayer), playedCard, currentSuit)) {
-                    System.out.println(players.get(currentPlayer).getName() + " tried to cheat");
+                    System.out.println(players.get(currentPlayer).getName() + "<" + players.get(currentPlayer).getClientSocket().getInetAddress() + ":" + players.get(currentPlayer).getClientSocket().getPort() + "> tried to cheat");
                     players.get(currentPlayer).send("You are not allowed to play that card, please play another");  //INNER CLASS W/ MESSAGES BUILDER METHODS
                     continue;
                 }
@@ -317,7 +317,6 @@ public class Sueca implements Game {
      * @return higher card
      */
     private Cards checkHigherCard(Cards playedCard, Cards higherCard, Cards.Suit trumpSuit) {
-        System.out.println("Entered checkHigherCard");
 
         if (!playedCard.getSuit().equals(higherCard.getSuit())) {
             if (!playedCard.getSuit().equals(trumpSuit)) {
@@ -356,7 +355,7 @@ public class Sueca implements Game {
             try {
                 moveString = currentPlayer.readFromClient();
             } catch (IOException e) {
-                System.err.println("Player has left\n");
+                System.err.println("<" + currentPlayer.getClientSocket().getInetAddress() + ":" + currentPlayer.getClientSocket().getPort() + "> has left");
             }
 
             if (moveString == null) {

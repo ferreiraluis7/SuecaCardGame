@@ -56,7 +56,7 @@ public class GameServer {
             try {
                 System.out.println("Waiting...\n");
                 Socket playerConnection = serverSocket.accept();
-                System.out.println("Player Connected from " + playerConnection.getInetAddress() + "\r\n");
+                System.out.println("Player Connected from " + playerConnection.getInetAddress() + ":" + playerConnection.getPort() + "\r\n");
                 Player playerConnected = new Player(playerConnection, playerNumber);
 
                 playerConnected.send("LEGITCHECK");
