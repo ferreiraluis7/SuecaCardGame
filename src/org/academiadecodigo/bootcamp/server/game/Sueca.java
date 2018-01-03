@@ -42,7 +42,6 @@ public class Sueca implements Game {
         //the player that starts the first game of a lobby is always the first to
 
         // game init
-        System.out.println("GAME IS ABOUT TO START");
 
         if (!isGameStarted) {
             //Set card hand for each player
@@ -249,7 +248,6 @@ public class Sueca implements Game {
      */
     private boolean checkGameEnd(List<Player> players, int totalCardsPlayed, int score) {
         if (totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER) {
-            System.out.println("Game ended\n");
             dealer.broadcastMessage(players, "\n\n GAME HAS ENDED \n");
 
             setGameScore(players, score);
@@ -262,7 +260,6 @@ public class Sueca implements Game {
                 startingPlayer = 0;
             }
 
-            System.out.println("Starting a new game.\n");
             playGame(players);
             return false;
         }

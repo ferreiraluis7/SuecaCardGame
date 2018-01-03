@@ -215,7 +215,6 @@ public class Salema implements Game {
 
     private boolean checkGameEnd(List<Player> players,int p1Points, int p2Points, int p3Points, int p4Points, int totalCardsPlayed) throws InterruptedException {
         if (totalCardsPlayed == NUMBER_OF_PLAYERS * CARDS_PER_PLAYER) {
-            System.out.println("Game ended\n");
             dealer.broadcastMessage(players, "\n\n GAME HAS ENDED \n");
 
             setGameScore(players, p1Points, p2Points, p3Points, p4Points);
@@ -252,7 +251,6 @@ public class Salema implements Game {
                 startingPlayer = 0;
             }
 
-            System.out.println("Starting a new game.\n");
             playGame(players);
             return false;
         }
