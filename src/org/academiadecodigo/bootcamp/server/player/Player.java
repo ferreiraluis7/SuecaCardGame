@@ -37,7 +37,6 @@ public class Player {
      * @return removed card
      */
     public void removeCard(Cards card) {
-        System.out.println(name + " removed " + card.getCompleteName() + " from hand. \n");
         hand.remove(card);
     }
 
