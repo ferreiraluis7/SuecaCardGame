@@ -95,6 +95,13 @@ public class Client {
             System.exit(1);
         }
 
+        if(readLine.equals("LEGITCHECK")){
+            output = new PrintWriter(clientSocket.getOutputStream(), true);
+            output.println("LEGIT");
+            output.flush();
+            return;
+        }
+
         if (readLine.contains("VICTORIES") || readLine.contains("GLOBAL SCORE")) {
             playingGame = true;
             music.stop();
@@ -112,7 +119,6 @@ public class Client {
             output.println("YES");
             output.flush();
         } else if (readLine.contains("//")) {
-            System.out.println(readLine);
             String[] readLineSplit = readLine.split(",,");
             String[] handSplit = readLineSplit[0].split("//");
             for (int counter = 0; counter < handSplit.length; counter++) {
