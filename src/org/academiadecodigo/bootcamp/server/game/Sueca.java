@@ -50,9 +50,9 @@ public class Sueca implements Game {
             prepareGame(players);
             //choose the trumpSuit
             trumpSuit = randomizeTrumpSuit();
-            currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\r\nGAME HAND:\r\n";
+            currentGameHand = generateTrumpSuitMessage(trumpSuit) + "GAME HAND:,,";
             informPlayerPartner(players);
-            dealer.broadcastMessage(players, generateTrumpSuitMessage(trumpSuit));
+            dealer.broadcastMessage(players, generateTrumpSuitMessage(trumpSuit).replace(",,",""));
             isGameStarted = true;
 
         }
@@ -92,7 +92,7 @@ public class Sueca implements Game {
                     higherCard = playedCard;
                     winningPlayer = players.get(currentPlayer);
 
-                    currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "\r\n";
+                    currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "@@";
 
                     currentSuit = playedCard.getSuit();
                     totalCardsPlayed++;
@@ -116,7 +116,7 @@ public class Sueca implements Game {
                     winningPlayer = players.get(currentPlayer);
                     higherCard = tempCard;
                 }
-                currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "\n"; //add players and card to the string
+                currentGameHand += players.get(currentPlayer).getName() + " card: " + playedCard + "@@"; //add players and card to the string
                 totalCardsPlayed++;
 
                 updateGameInfo(players, scoreTeamOne, scoreTeamTwo, currentGameHand);
@@ -132,7 +132,7 @@ public class Sueca implements Game {
                     }
 
                     currentPlayer = players.indexOf(winningPlayer);
-                    currentGameHand = generateTrumpSuitMessage(trumpSuit) + "\r\nGAME HAND:\r\n"; //reset String to default
+                    currentGameHand = generateTrumpSuitMessage(trumpSuit) + "GAME HAND:,,"; //reset String to default
                     cardsInPlay.clear();
                     continue;
                 }
@@ -185,7 +185,7 @@ public class Sueca implements Game {
      * @return trump suit message
      */
     private String generateTrumpSuitMessage(Cards.Suit trumpSuit) {
-        return "\r\nTRUMP: " + trumpSuit + "\r\n";
+        return "TRUMP: " + trumpSuit + ",,";
     }
 
     /**
@@ -212,10 +212,10 @@ public class Sueca implements Game {
         players.get(1).setTeam(2);
         players.get(2).setTeam(1);
         players.get(3).setTeam(2);
-        players.get(0).send("\nYou're in Team " + players.get(0).getTeam() + ". Your team mate is " + players.get(2).getName());
-        players.get(1).send("\nYou're in Team " + players.get(1).getTeam() + ". Your team mate is " + players.get(3).getName());
-        players.get(2).send("\nYou're in Team " + players.get(2).getTeam() + ". Your team mate is " + players.get(0).getName());
-        players.get(3).send("\nYou're in Team " + players.get(3).getTeam() + ". Your team mate is " + players.get(1).getName());
+        players.get(0).send("You're in Team " + players.get(0).getTeam() + ". Your team mate is " + players.get(2).getName());
+        players.get(1).send("You're in Team " + players.get(1).getTeam() + ". Your team mate is " + players.get(3).getName());
+        players.get(2).send("You're in Team " + players.get(2).getTeam() + ". Your team mate is " + players.get(0).getName());
+        players.get(3).send("You're in Team " + players.get(3).getTeam() + ". Your team mate is " + players.get(1).getName());
     }
 
     /**
