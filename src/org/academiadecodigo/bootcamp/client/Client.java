@@ -14,8 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Client {
-    private final static int PORT = 8081;
-    private static String HOST = "localhost";
+    private final static int PORT = 8080;
+    private static String HOST = "cards.servegame.com";
 
     private boolean playerTurn = false;
     private Socket clientSocket = null;
@@ -112,15 +112,32 @@ public class Client {
             output.println("YES");
             output.flush();
         } else if (readLine.contains("//")) {
+            System.out.println(readLine);
             String[] readLineSplit = readLine.split(",,");
             String[] handSplit = readLineSplit[0].split("//");
             for (int counter = 0; counter < handSplit.length; counter++) {
                 String cardCode = Cards.valueOf(handSplit[counter]).getUnicode();
                 renderToScreen(counter + " - " + cardCode); //SOUT CARDS HAND
             }
+            String finalMessage = "";
             if (readLineSplit.length > 1) { //BECAUSE 1ST STRING DOESN'T HAVE ,, AND WITHOUT THIS CONDITION IT WOULD CAUSE INDEX OUT OF BOUNDS
-                renderToScreen(readLineSplit[1]); //SOUT GAME HAND
+                if(!readLineSplit[1].equals("")) {
+                    finalMessage = "\r\n" + readLineSplit[1] + "\r\r\n\n"; //SOUT GAME HAND
+                } else {
+                    finalMessage = readLineSplit[1] + "\r\n";
+                }
             }
+
+            if(readLineSplit.length > 2) {
+                finalMessage += readLineSplit[2] + "\r\n";
+                String[] splittedMessage = readLineSplit[3].split("@@");
+                for (int i = 0; i < splittedMessage.length; i++) {
+                    String[] message = splittedMessage[i].split(":");
+                    String card = message[1].replace(" ","");
+                    finalMessage += message[0] + ": " + Cards.valueOf(card).getUnicode() + "\r\n";
+                }
+            }
+            renderToScreen(finalMessage);
         } else if (readLine.contains("PLAYERQUIT")) {
             playingGame = false;
             String[] readLineSplit = readLine.split("@@");

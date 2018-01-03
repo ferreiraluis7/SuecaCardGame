@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class GameServer {
-    private final int PORT = 8081;
+    private final int PORT = 8080;
     private ServerSocket serverSocket;
     private List<Player> totalPlayersList;
     private List<Player> suecaPlayerList;

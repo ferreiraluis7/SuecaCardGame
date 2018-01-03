@@ -56,6 +56,7 @@ public class ClientHelper implements Runnable, Playable {
                 message = sc.nextLine();
                 if (message.toUpperCase().equals("/NEWGAME") && !client.isPlayingGame()) {
                     client.setPlayingGame(false);
+                    client.setSetName(false);
                     client.newGame();
                 }
 
