@@ -90,11 +90,6 @@ public class Salema implements Game {
 
                 if (cardsInPlay.isEmpty()) {
 
-                    if (playedCard.equals(Cards.QUEEN_OF_SPADES)){
-                        players.get(currentPlayer).send("You are not allowed to play that card on the first move, please play another");  //INNER CLASS W/ MESSAGES BUILDER METHODS
-                        continue;
-                    }
-
                     confirmPlay(players, currentPlayer, cardsInPlay, playedCard);
 
                     higherCard = playedCard;
