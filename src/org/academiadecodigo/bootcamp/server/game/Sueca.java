@@ -176,8 +176,8 @@ public class Sueca implements Game {
      * @param scoreTeamTwo team two score
      */
     private void updateScoreInfo(List<Player> players, int scoreTeamOne, int scoreTeamTwo) {
-        dealer.broadcastMessage(players, "VICTORIES - TEAM 1 (" + players.get(0).getName() + " & " + players.get(2).getName() + "): " + teamOneVictories + " TEAM 2 (" + players.get(1).getName() + " & " + players.get(3).getName() + "): " + teamTwoVictories);
-        dealer.broadcastMessage(players, "SCORE - TEAM 1: " + scoreTeamOne + " TEAM 2: " + scoreTeamTwo + "\n");
+        dealer.broadcastMessage(players, "VICTORIES - TEAM 1 (" + players.get(0).getName() + " & " + players.get(2).getName() + ") " + teamOneVictories + " - " + teamTwoVictories+" TEAM 2 (" + players.get(1).getName() + " & " + players.get(3).getName() + "): ");
+        dealer.broadcastMessage(players, "SCORE - TEAM 1 " + scoreTeamOne + " - " + scoreTeamTwo + " TEAM 2 \n");
     }
 
     /**
