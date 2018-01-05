@@ -161,7 +161,6 @@ public class GameServer {
 
                 synchronized (suecaPlayerList) {
                     suecaPlayerList.add(connectedPlayer);
-                    System.out.println(suecaPlayerList.size());
                 }
 
             }
@@ -169,7 +168,6 @@ public class GameServer {
                 welcomeMessageSalema(connectedPlayer);
                 synchronized (salemaPlayerList) {
                     salemaPlayerList.add(connectedPlayer);
-                    System.out.println(salemaPlayerList.size());
                 }
             }
 

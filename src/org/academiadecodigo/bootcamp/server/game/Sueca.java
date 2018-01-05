@@ -176,7 +176,7 @@ public class Sueca implements Game {
      * @param scoreTeamTwo team two score
      */
     private void updateScoreInfo(List<Player> players, int scoreTeamOne, int scoreTeamTwo) {
-        dealer.broadcastMessage(players, "VICTORIES - TEAM 1: " + teamOneVictories + " TEAM 2: " + teamTwoVictories);
+        dealer.broadcastMessage(players, "VICTORIES - TEAM 1 (" + players.get(0).getName() + " & " + players.get(2).getName() + "): " + teamOneVictories + " TEAM 2 (" + players.get(1).getName() + " & " + players.get(3).getName() + "): " + teamTwoVictories);
         dealer.broadcastMessage(players, "SCORE - TEAM 1: " + scoreTeamOne + " TEAM 2: " + scoreTeamTwo + "\n");
     }
 
@@ -256,6 +256,12 @@ public class Sueca implements Game {
 
             setGameScore(players, score);
 
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             dealer.broadcastMessage(players, "\n GLOBAL SCORE:");
             dealer.broadcastMessage(players, "TEAM ONE: " + teamOneVictories + " TEAM TWO: " + teamTwoVictories + "\n");
 
@@ -287,7 +293,7 @@ public class Sueca implements Game {
                 teamTwoVictories+=3;
                 dealer.broadcastMessage(players, "Team Two has scored 120 points, quadruple victory for team Two");
             }
-            if (score < 30) {
+            if (score > 0 && score < 30) {
                 teamTwoVictories++;
                 dealer.broadcastMessage(players, "Team Two has scored more than 90 points, double victory for team Two");
             }
@@ -298,7 +304,7 @@ public class Sueca implements Game {
                 teamOneVictories += 3;
                 dealer.broadcastMessage(players, "Team One has scored 120 points, quadruple victory for team One");
             }
-            if (score > 90) {
+            if (score > 90 && score < TOTAL_POINTS) {
                 teamOneVictories++;
                 dealer.broadcastMessage(players, "Tem One has scored more than 90 points, double victory for team One");
             }
