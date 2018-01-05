@@ -15,7 +15,8 @@ import java.util.concurrent.Executors;
 
 public class Client {
     private final static int PORT = 8080;
-    private static String HOST = "cards.servegame.com";
+    //private static String HOST = "cards.servegame.com";
+    private static String HOST = "localhost";
 
     private boolean playerTurn = false;
     private Socket clientSocket = null;
@@ -119,12 +120,15 @@ public class Client {
             output = new PrintWriter(clientSocket.getOutputStream(), true);
             output.println("YES");
             output.flush();
-        } else if (readLine.contains("//")) {
+        } else if (readLine.contains("??") || readLine.contains("//")) {
+            readLine = readLine.replace("??","");
             String[] readLineSplit = readLine.split(",,");
-            String[] handSplit = readLineSplit[0].split("//");
-            for (int counter = 0; counter < handSplit.length; counter++) {
-                String cardCode = Cards.valueOf(handSplit[counter]).getUnicode();
-                renderToScreen(counter + " - " + cardCode); //SOUT CARDS HAND
+            if (readLineSplit[0].contains("//")) {
+                String[] handSplit = readLineSplit[0].split("//");
+                for (int counter = 0; counter < handSplit.length; counter++) {
+                    String cardCode = Cards.valueOf(handSplit[counter]).getUnicode();
+                    renderToScreen(counter + " - " + cardCode); //SOUT CARDS HAND
+                }
             }
             String finalMessage = "";
             if (readLineSplit.length > 1) { //BECAUSE 1ST STRING DOESN'T HAVE ,, AND WITHOUT THIS CONDITION IT WOULD CAUSE INDEX OUT OF BOUNDS

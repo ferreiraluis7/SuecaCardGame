@@ -170,7 +170,7 @@ public class CardDealer {
      */
     void sendAll(List<Player> players, String cardsInPlay) {
         for (Player p: players) {
-            p.send(Cards.encode(p.getHand()) + ",," + cardsInPlay);
+            p.send(Cards.encode(p.getHand()) + ",," + cardsInPlay + "??");
         }
     }
 
