@@ -77,13 +77,9 @@ public class Salema implements Game {
                     return;
                 }
 
+
                 if (checkIfPlayerLeft(players)) {
-                    playerLeft = true;
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    changePlayerLeftStatus();
                     return;
                 }
 
@@ -158,8 +154,14 @@ public class Salema implements Game {
 
     }
 
-
-
+    private void changePlayerLeftStatus() {
+        playerLeft = true;
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     private void updateGameInfo(List<Player> players, int p1Points, int p2points, int p3Points, int p4Points, String currentGameHand) {

@@ -74,12 +74,7 @@ public class Sueca implements Game {
                 }
 
                 if (checkIfPlayerLeft(players)) {
-                    playerLeft = true;
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    changePlayerLeftStatus();
                     return;
                 }
 
@@ -144,6 +139,15 @@ public class Sueca implements Game {
         }
 
 
+    }
+
+    private void changePlayerLeftStatus() {
+        playerLeft = true;
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -373,12 +377,7 @@ public class Sueca implements Game {
                     continue;
                 }
 
-                Cards card = currentPlayer.getHand().get(cardIndex);
-
-                //System.out.println(currentPlayer.getName() + " played " + card.getCompleteName() + ".\n");
-
-                return card;
-
+                return currentPlayer.getHand().get(cardIndex);
 
             } catch (NumberFormatException e) {
                 currentPlayer.send("invalid choice, please select a card to play");
