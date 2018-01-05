@@ -46,6 +46,7 @@ public class Client {
      * Listens for server communications
      */
     private void start() {
+        clearScreen();
         TinySound.init();
         Sound sound = TinySound.loadSound("SE/turn.wav");
         Music music = TinySound.loadMusic("BGM/waiting.wav");
@@ -102,7 +103,7 @@ public class Client {
             return;
         }
 
-        if (readLine.contains("VICTORIES") || readLine.contains("GLOBAL SCORE")) {
+        if (readLine.contains("VICTORIES") || readLine.contains("GLOBAL SCORE") || readLine.contains("GAME HAS ENDED")) {
             playingGame = true;
             music.stop();
             clearScreen();

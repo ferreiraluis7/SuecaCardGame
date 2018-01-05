@@ -279,6 +279,7 @@ public class Sueca implements Game {
      */
 
     private void setGameScore(List<Player> players, int score) {
+
         if (score < TOTAL_POINTS / 2) {
             teamTwoVictories++;
             dealer.broadcastMessage(players, "Team Two has won this game With " + (TOTAL_POINTS - score) + " points");
@@ -304,6 +305,8 @@ public class Sueca implements Game {
         } else {
             dealer.broadcastMessage(players, "Game tie");
         }
+        
+
     }
 
     /**
